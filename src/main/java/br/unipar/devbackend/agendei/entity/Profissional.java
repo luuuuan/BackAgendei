@@ -44,4 +44,6 @@ public class Profissional {
 
     @OneToMany(mappedBy = "profissional")
     private List<Servico> servicos;
+
+    private Boolean atendeADomicilio  = false;
 }

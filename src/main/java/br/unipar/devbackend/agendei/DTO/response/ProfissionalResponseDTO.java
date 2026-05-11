@@ -33,4 +33,7 @@ public class ProfissionalResponseDTO {
 
     private List<Long> servicoId;
 
+    private Boolean atendeADomicilio;
+
+
 }

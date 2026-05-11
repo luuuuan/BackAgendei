@@ -32,4 +32,6 @@ public class ProfissionalCreateDTO {
     //private Integer totalAvaliacao;
 
     private List<Long> servicosIds;
+
+    private Boolean atendeADomicilio = false;
 }

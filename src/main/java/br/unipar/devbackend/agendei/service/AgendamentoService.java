@@ -36,6 +36,31 @@ public class AgendamentoService {
 
     @Autowired
     private HorarioDisponivelRepository horarioDisponivelRepository;
+
+    public AgendamentoResponseDTO mapperDTO(Agendamento agendamento){
+
+        return new  AgendamentoResponseDTO(
+                agendamento.getId(),
+                agendamento.getDataAgendamento(),
+                agendamento.getDataCriacao(),
+                agendamento.getHoraInicio(),
+                agendamento.getHoraFim(),
+                agendamento.getDataConfirmacao(),
+                agendamento.getStatusAgendamento(),
+                agendamento.getValorTotal(),
+                agendamento.getObservacoes(),
+                agendamento.getUsuario() != null ? agendamento.getUsuario().getId() : null,
+                agendamento.getProfissional().getId(),
+                agendamento.getServicos()
+                        .stream()
+                        .map(Servico::getId)
+                        .toList(),
+                agendamento.getEndereco() != null ? agendamento.getEndereco().getId() : null
+        );
+
+    }
+
+
     public AgendamentoResponseDTO criarAgendamento(AgendamentoCreateDTO agendamentoCreateDTO) {
         Usuario usuario = agendamentoCreateDTO.getUsuarioId() != null ?
                 usuarioRepository
@@ -78,51 +103,10 @@ public class AgendamentoService {
 
 
         agendamentoRepository.save(agendamento);
-        return new AgendamentoResponseDTO(
-                agendamento.getId(),
-                agendamento.getDataAgendamento(),
-                agendamento.getDataCriacao(),
-                agendamento.getHoraInicio(),
-                agendamento.getHoraFim(),
-                agendamento.getDataConfirmacao(),
-                agendamento.getStatusAgendamento(),
-                agendamento.getValorTotal(),
-                agendamento.getObservacoes(),
-                agendamento.getUsuario().getId(),
-                agendamento.getProfissional().getId(),
-                agendamento.getServicos()
-                        .stream()
-                        .map(Servico::getId)
-                        .toList(),
-
-                agendamento.getEndereco().getId()
-
-
-        );
+        return mapperDTO(agendamento);
     }
 
-    public AgendamentoResponseDTO mapperDTO(Agendamento agendamento){
 
-        return new  AgendamentoResponseDTO(
-                agendamento.getId(),
-                agendamento.getDataAgendamento(),
-                agendamento.getDataCriacao(),
-                agendamento.getHoraInicio(),
-                agendamento.getHoraFim(),
-                agendamento.getDataConfirmacao(),
-                agendamento.getStatusAgendamento(),
-                agendamento.getValorTotal(),
-                agendamento.getObservacoes(),
-                agendamento.getUsuario().getId(),
-                agendamento.getProfissional().getId(),
-                agendamento.getServicos()
-                        .stream()
-                        .map(Servico::getId)
-                        .toList(),
-                agendamento.getEndereco().getId()
-        );
-
-    }
 
     public List<AgendamentoResponseDTO>
     buscaAgendamento(AgendamentoPesquisaDTO agendamentoPesquisaDTO) {

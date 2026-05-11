@@ -41,7 +41,8 @@ public class ProfissionalService {
                 profissional.getServicos()
                         .stream()
                         .map(Servico::getId)
-                        .toList()
+                        .toList(),
+                profissional.getAtendeADomicilio()
         );
 
     }
@@ -74,22 +75,12 @@ public class ProfissionalService {
         profissional.setStatusProfissional(StatusProfissional.PENDENTE);
         profissional.setPrestador(prestador);
         profissional.setServicos(servicos);
+        profissional.setAtendeADomicilio(profissionalCreateDTO.getAtendeADomicilio());
 
 
 
         profissionalRepository.save(profissional);
-        return new ProfissionalResponseDTO(
-                profissional.getId(),
-                profissional.getNome(),
-                profissional.getUsuario().getId(),
-                profissional.getDescricao(),
-                profissional.getPrestador().getId(),
-                profissional.getServicos()
-                        .stream()
-                        .map(Servico::getId)
-                        .toList()
-
-        );
+        return mapperDTO(profissional);
     }
 
 
@@ -111,7 +102,8 @@ public class ProfissionalService {
                         p.getServicos()
                                 .stream()
                                 .map(Servico::getId)
-                                .toList())
+                                .toList(),
+                        p.getAtendeADomicilio())
 
                 ).toList();
     }
@@ -130,7 +122,8 @@ public class ProfissionalService {
                         p.getServicos()
                                 .stream()
                                 .map(Servico::getId)
-                                .toList())
+                                .toList(),
+                        p.getAtendeADomicilio())
 
                 ).toList();
     }
@@ -147,7 +140,7 @@ public class ProfissionalService {
 
 
         Profissional profissional = profissionalRepository.findById(profissionalId)
-                .orElseThrow(() -> new RuntimeException("Profissional nãooo encontrado"));
+                .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
 
         Prestador prestador = prestadorRepository.findById(prestadorId)
                 .orElseThrow(() -> new RuntimeException("Prestador não encontrado"));
