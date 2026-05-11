@@ -37,9 +37,10 @@ public class AgendamentoService {
     @Autowired
     private HorarioDisponivelRepository horarioDisponivelRepository;
     public AgendamentoResponseDTO criarAgendamento(AgendamentoCreateDTO agendamentoCreateDTO) {
-        Usuario usuario = usuarioRepository
+        Usuario usuario = agendamentoCreateDTO.getUsuarioId() != null ?
+                usuarioRepository
                 .findById(agendamentoCreateDTO.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElse(null) : null;
 
         Profissional profissional = profissionalRepository
                 .findById(agendamentoCreateDTO.getProfissionalId())
@@ -51,9 +52,9 @@ public class AgendamentoService {
             throw new RuntimeException("Um ou mais serviços não foram encontrados");
         }
 
-        Endereco endereco = enderecoRepository
-                .findById(agendamentoCreateDTO.getEnderecoId())
-                .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
+        Endereco endereco = agendamentoCreateDTO.getEnderecoId() != null ?
+                enderecoRepository.findById(agendamentoCreateDTO.getEnderecoId())
+                .orElse(null) : null;
 
         BigDecimal valorTotalAgendamento = servicos.stream()
                 .map(Servico::getValor)

@@ -46,4 +46,13 @@ public class ServicoController {
         return ResponseEntity.ok(profissionaisServicos);
 
     }
+
+    @PatchMapping("/atualizar/{id}")
+    public ResponseEntity<?> atualizar(
+            @PathVariable Long id,
+            @RequestBody  ServicoCreateDTO servicoCreateDTO){
+
+
+        return ResponseEntity.ok(servicoCreateDTO.atualizarServico(id, servicoCreateDTO);
+    }
 }
