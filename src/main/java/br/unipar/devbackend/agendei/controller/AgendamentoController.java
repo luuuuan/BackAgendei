@@ -84,4 +84,13 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentoResponseDTO);
     }
 
+    @GetMapping("/todos")
+    public ResponseEntity<List<AgendamentoResponseDTO>> agendamentosPrestador(
+            @RequestParam Long prestadorId){
+
+        List<AgendamentoResponseDTO> agendamentosPrestador = agendamentoService.agendamentosPrestaor(prestadorId);
+
+        return ResponseEntity.ok(agendamentosPrestador);
+    }
+
 }

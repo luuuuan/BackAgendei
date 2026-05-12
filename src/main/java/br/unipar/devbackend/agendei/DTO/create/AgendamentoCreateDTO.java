@@ -51,4 +51,6 @@ public class AgendamentoCreateDTO {
     private List<Long> servicos;
 
     private Long enderecoId;
+	
+	private Long prestadorId;
 }

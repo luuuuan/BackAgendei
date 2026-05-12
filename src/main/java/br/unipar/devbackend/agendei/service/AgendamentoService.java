@@ -55,7 +55,8 @@ public class AgendamentoService {
                         .stream()
                         .map(Servico::getId)
                         .toList(),
-                agendamento.getEndereco() != null ? agendamento.getEndereco().getId() : null
+                agendamento.getEndereco() != null ? agendamento.getEndereco().getId() : null,
+                agendamento.getPrestadorId()
         );
 
     }
@@ -125,9 +126,9 @@ public class AgendamentoService {
         List<Agendamento> agendamentos =
                 agendamentoRepository.findByUsuarioId(agendamentoPesquisaDTO.getUsuarioId());
 
-//        if(agendamentos.isEmpty()){
-//            throw new RuntimeException("Nenhum agendamento realizado.");
-//        }
+        if(agendamentos.isEmpty()){
+            throw new RuntimeException("Nenhum agendamento realizado.");
+        }
 
         return agendamentos.stream()
                 .map(this::mapperDTO)
@@ -156,6 +157,17 @@ public class AgendamentoService {
         agendamentoRepository.save(agendamento);
 
         return mapperDTO(agendamento);
+
+    }
+
+    public List<AgendamentoResponseDTO> agendamentosPrestaor(Long prestadorId){
+        List<Agendamento> agendamento = agendamentoRepository.findByPrestadorId(prestadorId);
+
+
+
+        return agendamento.stream()
+                .map(this::mapperDTO)
+                .toList();
 
     }
 

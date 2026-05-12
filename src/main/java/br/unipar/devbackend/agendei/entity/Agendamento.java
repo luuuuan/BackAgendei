@@ -24,7 +24,6 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private BigDecimal valorServico;
 
     private LocalDate dataAgendamento;
@@ -73,4 +72,6 @@ public class Agendamento {
     @ManyToOne
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
+	
+	private Long prestadorId;
 }

@@ -43,5 +43,7 @@ public class AgendamentoResponseDTO {
 
     private Long enderecoId;
 
+    private Long prestadorId;
+
 
 }
