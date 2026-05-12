@@ -115,25 +115,7 @@ public class AgendamentoService {
 
 
         return agendamentos.stream()
-                .map( a -> new AgendamentoResponseDTO(
-                        a.getId(),
-                        a.getDataAgendamento(),
-                        a.getDataCriacao(),
-                        a.getHoraInicio(),
-                        a.getHoraFim(),
-                        a.getDataConfirmacao(),
-                        a.getStatusAgendamento(),
-                        a.getValorTotal(),
-                        a.getObservacoes(),
-                        a.getUsuario().getId(),
-                        a.getProfissional().getId(),
-                        a.getServicos()
-                                .stream()
-                                .map(Servico::getId)
-                                .toList(),
-                        a.getEndereco().getId()
-
-                )).toList();
+                .map(this::mapperDTO).toList();
 
     }
 

@@ -142,7 +142,7 @@ public class ProfissionalService {
         Profissional profissional = profissionalRepository.findById(profissionalId)
                 .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
 
-        if(profissionalRepository.existsProfissionals(profissionalId)){
+        if(profissionalRepository.existsById(profissionalId)){
             throw new RuntimeException("Profissinal já vinculado a empresa");
         }
 

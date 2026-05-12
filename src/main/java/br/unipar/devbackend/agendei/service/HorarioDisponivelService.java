@@ -3,11 +3,15 @@ package br.unipar.devbackend.agendei.service;
 
 import br.unipar.devbackend.agendei.DTO.create.HorarioDisponivelDTO;
 import br.unipar.devbackend.agendei.DTO.response.HorarioDisponivelResponseDTO;
+import br.unipar.devbackend.agendei.entity.Endereco;
 import br.unipar.devbackend.agendei.entity.HorarioDisponivel;
 import br.unipar.devbackend.agendei.entity.Profissional;
 import br.unipar.devbackend.agendei.entity.Servico;
 import br.unipar.devbackend.agendei.enums.StatusHorario;
+import br.unipar.devbackend.agendei.repository.EnderecoRepository;
 import br.unipar.devbackend.agendei.repository.HorarioDisponivelRepository;
+import br.unipar.devbackend.agendei.repository.ProfissionalRepository;
+import br.unipar.devbackend.agendei.repository.ServicoRepository;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,12 @@ public class HorarioDisponivelService {
 
     @Autowired
     private HorarioDisponivelRepository horarioDisponivelRepository;
+    @Autowired
+    private EnderecoRepository enderecoRepository;
+    @Autowired
+    private ProfissionalRepository profissionalRepository;
+    @Autowired
+    private ServicoRepository servicoRepository;
 
     public List<String> disponibilidade(
             Long profissionalId, LocalDate dataAgendamento){
@@ -46,14 +56,20 @@ public class HorarioDisponivelService {
             HorarioDisponivelDTO horarioDisponivelDTO){
         //HorarioDisponivel horarioDisponivel = horarioDisponivelRepository.findBy
 
+        Profissional profissional = profissionalRepository.findById(horarioDisponivelDTO.getProfissionalId())
+                .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+
+        Servico servico = servicoRepository.findById(horarioDisponivelDTO.getServicoId())
+                .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
+
         HorarioDisponivel horarioDisponivel = new HorarioDisponivel();
 
         horarioDisponivel.setData(horarioDisponivelDTO.getData());
         horarioDisponivel.setHoraInicio(horarioDisponivelDTO.getHoraInicio());
         horarioDisponivel.setHoraFim(horarioDisponivelDTO.getHoraFim());
         horarioDisponivel.setStatusHorario(StatusHorario.DISPONIVEL);
-        horarioDisponivel.setProfissional(horarioDisponivelDTO.getProfissional());
-        horarioDisponivel.setServico(horarioDisponivelDTO.getServico());
+        horarioDisponivel.setProfissional(profissional);
+        horarioDisponivel.setServico(servico);
 
         horarioDisponivelRepository.save(horarioDisponivel);
 
@@ -66,21 +82,5 @@ public class HorarioDisponivelService {
                 horarioDisponivel.getProfissional().getId()
 //                horarioDisponivel.getServico()
         );
-/*
-        private LocalDate data;
-
-        private LocalTime horaInicio;
-
-        private LocalTime horaFim;
-
-        private Boolean status;
-
-        @ManyToOne
-        @JoinColumn(name = "profissional_id")
-        private Profissional profissional;
-
-        @ManyToOne
-        @JoinColumn(name = "servico_id")
-        private Servico servico;*/
     }
 }

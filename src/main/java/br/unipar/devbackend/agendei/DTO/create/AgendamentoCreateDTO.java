@@ -49,6 +49,6 @@ public class AgendamentoCreateDTO {
     private Long profissionalId;
 
     private List<Long> servicos;
-    @NotNull(message = "Endereço deve ser informado!")
+
     private Long enderecoId;
 }

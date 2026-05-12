@@ -3,6 +3,7 @@ package br.unipar.devbackend.agendei.entity;
 
 import br.unipar.devbackend.agendei.enums.StatusAgendamento;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -43,7 +44,7 @@ public class Agendamento {
 
     private String motivoCancelamento;
 
-    @Column(nullable = false)
+    @NotNull
     private BigDecimal taxaPlataforma;
 
     private BigDecimal valorTotal;
@@ -51,7 +52,7 @@ public class Agendamento {
     private String observacoes;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @ManyToOne

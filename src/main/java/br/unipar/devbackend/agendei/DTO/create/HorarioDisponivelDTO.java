@@ -28,7 +28,7 @@ public class HorarioDisponivelDTO {
 
     private StatusHorario statusHorario;
 
-    private Profissional profissional;
+    private Long profissionalId;
 
-    private Servico servico;
+    private Long servicoId;
 }

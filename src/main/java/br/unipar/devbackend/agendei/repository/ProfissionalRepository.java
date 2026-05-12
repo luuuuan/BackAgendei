@@ -11,8 +11,6 @@ import java.util.Optional;
 public interface ProfissionalRepository extends JpaRepository<Profissional, Long> {
     //boolean existsByServicos(String servico);
 
-    Boolean existsProfissionals(Long id);
-
     List<Profissional> findByServicos_Id(Long aLong);
 
 
