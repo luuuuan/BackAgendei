@@ -76,11 +76,35 @@ public class HorarioDisponivelService {
         return new HorarioDisponivelResponseDTO(
                 horarioDisponivel.getId(),
                 horarioDisponivel.getData(),
+                horarioDisponivel.getHoraInicio(),
+                horarioDisponivel.getHoraFim(),
+                horarioDisponivel.getStatusHorario(),
 //                horarioDisponivel.getHoraInicio(),
 //                horarioDisponivel.getHoraFim(),
 //                horarioDisponivel.getStatus(),
-                horarioDisponivel.getProfissional().getId()
-//                horarioDisponivel.getServico()
+                horarioDisponivel.getProfissional().getId(),
+                horarioDisponivel.getServico().getId()
+                //
         );
+    }
+
+    public List<HorarioDisponivelResponseDTO> horarioProfissional(
+            Long profissionalId){
+
+        List<HorarioDisponivel> horarioDisponivel =
+                horarioDisponivelRepository.findByProfissionalId(profissionalId);
+
+        return horarioDisponivel.stream()
+                .map(h -> new HorarioDisponivelResponseDTO(
+                        h.getId(),
+                        h.getData(),
+                        h.getHoraInicio(),
+                        h.getHoraFim(),
+                        h.getStatusHorario(),
+                        h.getProfissional().getId(),
+                        h.getServico().getId()
+                        //
+
+                )).toList();
     }
 }

@@ -4,6 +4,7 @@ package br.unipar.devbackend.agendei.controller;
 import br.unipar.devbackend.agendei.DTO.create.AgendamentoCreateDTO;
 import br.unipar.devbackend.agendei.DTO.create.AgendamentoPesquisaDTO;
 import br.unipar.devbackend.agendei.DTO.response.AgendamentoResponseDTO;
+import br.unipar.devbackend.agendei.enums.StatusAgendamento;
 import br.unipar.devbackend.agendei.service.AgendamentoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/agendamento")
@@ -70,4 +72,16 @@ public class AgendamentoController {
 
         return ResponseEntity.ok(agendamentoResponseDTO);
     }
+
+    @PatchMapping("/atualizar-status/{id}")
+    public ResponseEntity<AgendamentoResponseDTO> statusAgendamento(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body
+            ){
+         AgendamentoResponseDTO agendamentoResponseDTO =
+                agendamentoService.atualizaStatus(id, body.get("status"));
+
+        return ResponseEntity.ok(agendamentoResponseDTO);
+    }
+
 }

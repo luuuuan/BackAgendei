@@ -9,5 +9,5 @@ import java.util.List;
 public interface HorarioDisponivelRepository extends JpaRepository<HorarioDisponivel, Long> {
     List<HorarioDisponivel> findByProfissionalIdAndData(Long profissionalId, LocalDate dataAgendamento);
 
-
+    List<HorarioDisponivel> findByProfissionalId(Long profissionalId);
 }

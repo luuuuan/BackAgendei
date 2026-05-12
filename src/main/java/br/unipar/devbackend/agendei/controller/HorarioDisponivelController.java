@@ -3,6 +3,7 @@ package br.unipar.devbackend.agendei.controller;
 
 import br.unipar.devbackend.agendei.DTO.create.HorarioDisponivelDTO;
 import br.unipar.devbackend.agendei.DTO.response.HorarioDisponivelResponseDTO;
+import br.unipar.devbackend.agendei.entity.HorarioDisponivel;
 import br.unipar.devbackend.agendei.service.HorarioDisponivelService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,18 @@ public class HorarioDisponivelController {
 
     @PostMapping("/cadastrar")
     public ResponseEntity<HorarioDisponivelResponseDTO> cadastrarHorario(
-            @Valid @RequestBody HorarioDisponivelDTO horarioDisponivelDTO
-    ){
+            @Valid @RequestBody HorarioDisponivelDTO horarioDisponivelDTO){
         HorarioDisponivelResponseDTO horarioDisponivelResponseDTO =
                 horarioDisponivelService.cadastrarHorario(horarioDisponivelDTO);
+
+        return ResponseEntity.ok(horarioDisponivelResponseDTO);
+    }
+
+    @GetMapping("/profissional/{profissionalId}")
+    public ResponseEntity<List<HorarioDisponivelResponseDTO>> horariosProfissional(
+            @PathVariable Long profissionalId){
+         List<HorarioDisponivelResponseDTO> horarioDisponivelResponseDTO =
+                horarioDisponivelService.horarioProfissional(profissionalId);
 
         return ResponseEntity.ok(horarioDisponivelResponseDTO);
     }

@@ -147,4 +147,16 @@ public class AgendamentoService {
 
     }
 
+    public AgendamentoResponseDTO atualizaStatus(Long agendamentoId, String status){
+        Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
+                .orElseThrow(() -> new RuntimeException("Nenhum agendamento encontrado"));
+
+        agendamento.setStatusAgendamento(StatusAgendamento.valueOf(status));
+
+        agendamentoRepository.save(agendamento);
+
+        return mapperDTO(agendamento);
+
+    }
+
 }
