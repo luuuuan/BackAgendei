@@ -25,16 +25,21 @@ public class ServicoService {
 
     public ServicoResponseDTO mapperDTO(Servico servico){
 
-        return new ServicoResponseDTO()(
+        return new ServicoResponseDTO(
                 servico.getId(),
                 servico.getDuracaoMinutos(),
                 servico.getTempoBuffer(),
-                servico.getStatus(),
-                servico.getTelefone(),
-                servico.getDataNascimento(),
-                servico.getEndereco().getId(),
-                servico.getTipoUsuario(),
-                servico.getPrestador() != null ? usuario.getPrestador().getId() : null
+                servico.getStatusServico(),
+                servico.getStatusExecucaoServico(),
+                servico.getValor(),
+                servico.getProfissional().getId(),
+                servico.getNome(),
+                servico.getDescricao()
+//                servico.getTelefone(),
+//                servico.getDataNascimento(),
+//                servico.getEndereco().getId(),
+//                servico.getTipoUsuario(),
+//                servico.getPrestador() != null ? usuario.getPrestador().getId() : null
         );
 
     }
@@ -57,17 +62,9 @@ public class ServicoService {
 
         servicoRepository.save(servico);
 
-        return new ServicoResponseDTO(
-                servico.getId(),
-                servico.getDuracaoMinutos(),
-                servico.getTempoBuffer(),
-                servico.getStatusServico(),
-                servico.getValor(),
-                servico.getProfissional().getId(),
-                servico.getNome(),
-                servico.getDescricao()
+        return mapperDTO(servico);
 
-        );
+
     }
 
 
@@ -102,6 +99,7 @@ public class ServicoService {
                         s.getDuracaoMinutos(),
                         s.getTempoBuffer(),
                         s.getStatusServico(),
+                        s.getStatusExecucaoServico(),
                         s.getValor(),
                         s.getProfissional().getId(),
                         s.getNome(),

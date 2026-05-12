@@ -53,6 +53,6 @@ public class ServicoController {
             @RequestBody  ServicoCreateDTO servicoCreateDTO){
 
 
-        return ResponseEntity.ok(servicoCreateDTO.atualizarServico(id, servicoCreateDTO);
+        return ResponseEntity.ok(servicoService.atualizarServico(id, servicoCreateDTO));
     }
 }

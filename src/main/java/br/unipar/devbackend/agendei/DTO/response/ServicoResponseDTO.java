@@ -1,6 +1,7 @@
 package br.unipar.devbackend.agendei.DTO.response;
 
 import br.unipar.devbackend.agendei.entity.Profissional;
+import br.unipar.devbackend.agendei.enums.ServicoExecucaoStatus;
 import br.unipar.devbackend.agendei.enums.StatusProfissional;
 import br.unipar.devbackend.agendei.enums.StatusServico;
 import jakarta.persistence.JoinColumn;
@@ -25,6 +26,8 @@ public class ServicoResponseDTO {
     private Integer tempoBuffer;
 
     private StatusServico statusServico;
+
+    private ServicoExecucaoStatus statusExecucaoServico;
 
     private BigDecimal valor;
 
