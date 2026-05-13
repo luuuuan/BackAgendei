@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UsuarioAtualizaCreateDTO {
 
-    private long id;
+    //private Long id;
 
     private String nome;
 

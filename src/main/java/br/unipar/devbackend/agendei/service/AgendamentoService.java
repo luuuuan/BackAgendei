@@ -126,7 +126,7 @@ public class AgendamentoService {
         List<Agendamento> agendamentos =
                 agendamentoRepository.findByUsuarioId(agendamentoPesquisaDTO.getUsuarioId());
 
-        
+
 
         return agendamentos.stream()
                 .map(this::mapperDTO)

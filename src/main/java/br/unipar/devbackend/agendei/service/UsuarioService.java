@@ -250,9 +250,9 @@ public class UsuarioService {
         return mapperDTO(usuario);
     }
 
-    public UsuarioAtualizaResponseDTO atualizarCliente(UsuarioAtualizaCreateDTO usuarioAtualizaCreateDTO){
+    public UsuarioAtualizaResponseDTO atualizarCliente(Long usuarioId, UsuarioAtualizaCreateDTO usuarioAtualizaCreateDTO){
 
-        Usuario usuario = usuarioRepository.findById(usuarioAtualizaCreateDTO.getId())
+        Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
 

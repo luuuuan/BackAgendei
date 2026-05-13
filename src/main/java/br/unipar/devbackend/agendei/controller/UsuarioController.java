@@ -29,11 +29,12 @@ public class UsuarioController {
     }
 
 
-    @PatchMapping("/atualizar-cliente/{id}")
+    @PatchMapping("/atualizar-cliente/{usuarioId}")
     public ResponseEntity<UsuarioAtualizaResponseDTO> atualizar(
-            @Valid @RequestBody UsuarioAtualizaCreateDTO usuarioAtualizaCreateDTO){
+            @Valid @RequestBody UsuarioAtualizaCreateDTO usuarioAtualizaCreateDTO,
+            @PathVariable Long usuarioId){
 
-        UsuarioAtualizaResponseDTO usuarioAtualizaResponseDTO = usuarioService.atualizarCliente(usuarioAtualizaCreateDTO);
+        UsuarioAtualizaResponseDTO usuarioAtualizaResponseDTO = usuarioService.atualizarCliente(usuarioId, usuarioAtualizaCreateDTO);
 
         return ResponseEntity.ok(usuarioAtualizaResponseDTO);
     }

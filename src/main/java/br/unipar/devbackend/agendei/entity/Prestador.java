@@ -32,4 +32,6 @@ public class Prestador{
     @OneToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+
+    private Long profissionalId;
 }

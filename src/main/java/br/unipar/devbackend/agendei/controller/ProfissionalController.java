@@ -1,7 +1,10 @@
 package br.unipar.devbackend.agendei.controller;
 
 import br.unipar.devbackend.agendei.DTO.create.ProfissionalCreateDTO;
+import br.unipar.devbackend.agendei.DTO.response.PrestadorResponseDTO;
 import br.unipar.devbackend.agendei.DTO.response.ProfissionalResponseDTO;
+import br.unipar.devbackend.agendei.entity.Prestador;
+import br.unipar.devbackend.agendei.entity.Servico;
 import br.unipar.devbackend.agendei.service.ProfissionalService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +58,5 @@ public class ProfissionalController {
         return ResponseEntity.ok(profissionalResponseDTO);
     }
 
-    @PostMapping("/vincular")
-    public ResponseEntity<?> vincular(@RequestBody Map<String, Long> body){
-        profissionalService.vincularProfissional(body.get("profissionalId"), body.get("prestadorId"));
 
-        return ResponseEntity.ok(Map.of("mensagem", "Profissional vinculado com sucesso"));
-    }
 }

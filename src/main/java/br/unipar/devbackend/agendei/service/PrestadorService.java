@@ -3,10 +3,13 @@ package br.unipar.devbackend.agendei.service;
 
 import br.unipar.devbackend.agendei.DTO.create.PrestadorCreateDTO;
 import br.unipar.devbackend.agendei.DTO.response.PrestadorResponseDTO;
+import br.unipar.devbackend.agendei.DTO.response.ProfissionalResponseDTO;
 import br.unipar.devbackend.agendei.entity.Prestador;
+import br.unipar.devbackend.agendei.entity.Profissional;
 import br.unipar.devbackend.agendei.entity.Servico;
 import br.unipar.devbackend.agendei.entity.Usuario;
 import br.unipar.devbackend.agendei.repository.PrestadorRepository;
+import br.unipar.devbackend.agendei.repository.ProfissionalRepository;
 import br.unipar.devbackend.agendei.repository.ServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,9 @@ public class PrestadorService {
     private PrestadorRepository prestadorRepository;
     @Autowired
     private ServicoRepository servicoRepository;
+
+    @Autowired
+    private ProfissionalRepository profissionalRepository;
 
     public PrestadorResponseDTO cadastroPrestador(PrestadorCreateDTO  prestadorCreateDTO){
 
@@ -49,5 +55,9 @@ public class PrestadorService {
 
         );
     }
+
+
+
+
 
 }

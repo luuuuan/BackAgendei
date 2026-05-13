@@ -26,6 +26,7 @@ public class ProfissionalService {
 
     @Autowired
     private AvaliacaoRepository avaliacaoRepository;
+
     @Autowired
     private PrestadorRepository prestadorRepository;
 
@@ -88,9 +89,6 @@ public class ProfissionalService {
     listarProfissionais(Long prestadorId) {
         List<Profissional> profissionais = profissionalRepository.findByPrestador_Id(prestadorId);
 
-        if(profissionais.isEmpty()){
-            throw new RuntimeException("Nenhum profissinal encontrado");
-        }
 
         return profissionais.stream()
                 .map( p ->  new ProfissionalResponseDTO(
@@ -135,15 +133,15 @@ public class ProfissionalService {
         return mapperDTO(profissional);
     }
 
-
     public void vincularProfissional(Long profissionalId, Long prestadorId) {
 
 
         Profissional profissional = profissionalRepository.findById(profissionalId)
                 .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
 
-        if(profissionalRepository.existsById(profissionalId)){
-            throw new RuntimeException("Profissinal já vinculado a empresa");
+        if(profissional.getPrestador() != null &&
+                profissional.getPrestador().getId().equals(prestadorId)){
+            throw new RuntimeException("Profissional já vinculado a empresa");
         }
 
         Prestador prestador = prestadorRepository.findById(prestadorId)
@@ -153,4 +151,5 @@ public class ProfissionalService {
         profissionalRepository.save(profissional);
 
     }
+
 }
