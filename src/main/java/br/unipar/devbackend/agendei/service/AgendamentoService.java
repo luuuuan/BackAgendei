@@ -126,9 +126,9 @@ public class AgendamentoService {
         List<Agendamento> agendamentos =
                 agendamentoRepository.findByUsuarioId(agendamentoPesquisaDTO.getUsuarioId());
 
-        if(agendamentos.isEmpty()){
-            throw new RuntimeException("Nenhum agendamento realizado.");
-        }
+//        if(agendamentos.isEmpty()){
+//            throw new RuntimeException("Nenhum agendamento realizado.");
+//        }
 
         return agendamentos.stream()
                 .map(this::mapperDTO)
