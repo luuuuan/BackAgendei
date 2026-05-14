@@ -183,10 +183,12 @@ public class UsuarioService {
                         usuarioLoginDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("E-mail ou senha incorreto!"));
 
-        if(usuario.getTipoUsuario() == UserTipo.PROFISSIONAL && usuario.getPrestador() == null){
-            throw new RuntimeException("Profissional não possui prestador vinculado");
-
-        }
+//        Profissional profissional = profissionalRepository.findByPrestador_Id()
+//
+//        if(usuario.getTipoUsuario() == UserTipo.PROFISSIONAL && usuario.getPrestador() == null){
+//            throw new RuntimeException("Profissional não possui prestador vinculado");
+//
+//        }
 
         if(!passwordEncoder.matches(usuarioLoginDTO.getSenha(), usuario.getSenha())){
             throw new RuntimeException("E-mail ou senha incorretooo");

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +102,7 @@ public class AgendamentoService {
         agendamento.setProfissional(profissional);
         agendamento.setServicos(servicos);
         agendamento.setEndereco(endereco);
+        agendamento.setPrestadorId(profissional.getPrestador().getId());
 
 
         agendamentoRepository.save(agendamento);
@@ -151,6 +153,7 @@ public class AgendamentoService {
                 .orElseThrow(() -> new RuntimeException("Nenhum agendamento encontrado"));
 
         agendamento.setStatusAgendamento(StatusAgendamento.valueOf(status));
+        agendamento.setDataConfirmacao(LocalDate.from(LocalDateTime.now()));
 
         agendamentoRepository.save(agendamento);
 
@@ -160,7 +163,6 @@ public class AgendamentoService {
 
     public List<AgendamentoResponseDTO> agendamentosPrestaor(Long prestadorId){
         List<Agendamento> agendamento = agendamentoRepository.findByPrestadorId(prestadorId);
-
 
 
         return agendamento.stream()

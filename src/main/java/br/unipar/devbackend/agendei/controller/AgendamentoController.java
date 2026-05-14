@@ -35,8 +35,7 @@ public class AgendamentoController {
 
     @GetMapping("/consultaAgendamento")
     public ResponseEntity<List<AgendamentoResponseDTO>> agendamentos(
-            @RequestParam LocalDate dataCriacao) {
-
+            @RequestParam (required = false) LocalDate dataCriacao) {
 
 
         AgendamentoPesquisaDTO agendamentoPesquisaDTO = new AgendamentoPesquisaDTO();

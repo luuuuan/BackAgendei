@@ -11,10 +11,12 @@ public class AvaliacaoCreateDTO {
 
     private String comentario;
 
-    @ManyToOne
-    private Usuario cliente;
+    private Long agendamentoId;
 
-    @ManyToOne
     @NotNull(message = "Profissional deve ser informado")
     private Long profissionalId;
+
+    private Long usuarioId;
+
+
 }

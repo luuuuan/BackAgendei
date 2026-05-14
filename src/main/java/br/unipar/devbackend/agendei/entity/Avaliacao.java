@@ -17,14 +17,16 @@ public class Avaliacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double nota;
+    private Integer nota;
 
     private String comentario;
 
-    private Integer totalAvaliacao;
+    @ManyToOne
+    @JoinColumn(name = "agendamento_id")
+    private Agendamento agendamento;
 
     @ManyToOne
-    private Usuario cliente;
+    private Usuario usuario;
 
     @ManyToOne
     private Profissional profissional;
