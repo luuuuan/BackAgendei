@@ -44,8 +44,10 @@ public class AvaliacaoService {
         avaliacao.setNota(avaliacaoCreateDTO.getNota());
         avaliacao.setComentario(avaliacaoCreateDTO.getComentario());
         avaliacao.setAgendamento(agendamento);
-        avaliacao.setProfissional(profissional);
         avaliacao.setUsuario(usuario);
+        avaliacao.setProfissional(profissional);
+        
+
 
         avaliacaoRepository.save(avaliacao);
 

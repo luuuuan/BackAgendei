@@ -36,7 +36,7 @@ public class Agendamento {
 
     private LocalDate dataConfirmacao;
 
-    private LocalDate dataCancelamento;
+    private LocalDateTime dataCancelamento;
 
     @Enumerated(EnumType.STRING)
     private StatusAgendamento statusAgendamento;

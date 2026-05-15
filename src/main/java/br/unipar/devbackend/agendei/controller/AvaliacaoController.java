@@ -20,7 +20,7 @@ public class AvaliacaoController {
     @Autowired
     private AvaliacaoService avaliacaoService;
 
-    @PostMapping("/agendamento")
+    @PostMapping("/cadastrar")
     public ResponseEntity<AvaliacaoResponseDTO> avaliarAgendamento(
           @Valid @RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO){
         AvaliacaoResponseDTO avaliacaoResponseDTO = avaliacaoService.avaliarServico(avaliacaoCreateDTO);

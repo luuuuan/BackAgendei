@@ -17,6 +17,8 @@ public class Avaliacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+
     private Integer nota;
 
     private String comentario;
