@@ -179,8 +179,10 @@ public class AgendamentoService {
 
         GradeTrabalho gradeTrabalho = gradeAtiva.orElseThrow(() -> new RuntimeException("Nenhuma grade ativa encontrada"));
 
+        List<Agendamento> agendamentos = agendamentoRepository.findByProfissionalIdAndDataAgendamento(profissionalId, data);
+
         if(data.getDayOfWeek().getValue() > gradeTrabalho.getDiaFim().getValue() ||
-                data.getDayOfWeek().getValue() < gradeTrabalho.getDiaFim().getValue()){
+                data.getDayOfWeek().getValue() < gradeTrabalho.getDiaInicio().getValue()){
             return new ArrayList<>();
         }
         //===============================================================
@@ -194,17 +196,41 @@ public class AgendamentoService {
         if(folgaProfissional == true){
             return new ArrayList<>();
         }
-
         //===============================
-        
+
+        List<String> horarioDisponivel = new ArrayList<>();
+        int inicio = gradeTrabalho.getHorarioInicio().getHour() * 60 + gradeTrabalho.getHorarioInicio().getMinute();
+
+        int fim = gradeTrabalho.getHorarioFim().getHour() * 60 + gradeTrabalho.getHorarioFim().getMinute();
+
+        for (int minutos = inicio; minutos + duracao < fim; minutos += duracao) {
+            int horasConvertido = minutos / 60;
+
+            int minutosConvertido = minutos % 60;
+
+            LocalTime tempo = LocalTime.of(horasConvertido, minutosConvertido);
+
+            if(gradeTrabalho.getInicioIntervalo() != null
+                    && tempo.isAfter(gradeTrabalho.getInicioIntervalo())
+                    && tempo.isBefore(gradeTrabalho.getFimIntervalo())){
+                continue;
+            }
+
+            LocalTime slotFim = LocalTime.of((minutos + duracao) / 60, (minutos + duracao) % 60);
+
+            boolean temConflito = agendamentos.stream().anyMatch(a ->
+                    a.getHoraInicio().isBefore(slotFim) && a.getHoraFim().isAfter(tempo)
+            );
+
+            if (temConflito) {
+                continue;
+            }
+
+            horarioDisponivel.add(tempo.toString());
+        }
 
 
-
-        return horarioDisponivelRepository.findByProfissionalIdAndData(profissionalId, data)
-                        .stream()
-                        .filter(h -> h.getStatusHorario() == StatusHorario.DISPONIVEL)
-                        .map(h -> h.getHoraInicio().toString())
-                        .toList();
+        return horarioDisponivel;
 
 
     }
