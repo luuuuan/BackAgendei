@@ -27,8 +27,6 @@ public class ServicoResponseDTO {
 
     private ServicoExecucaoStatus statusExecucaoServico;
 
-    private BigDecimal valor;
-
     private Long profissionalId;
 
     private String nome;
@@ -38,4 +36,7 @@ public class ServicoResponseDTO {
     private TipoCobranca tipoCobranca;
 
     private LocalAtendimento localAtendimento;
+
+    private BigDecimal valorServico;
+
 }

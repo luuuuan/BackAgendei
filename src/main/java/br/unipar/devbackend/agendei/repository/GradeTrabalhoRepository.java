@@ -12,9 +12,7 @@ import java.util.Optional;
 public interface GradeTrabalhoRepository extends JpaRepository <GradeTrabalho, Long> {
 
     List<GradeTrabalho> findByProfissionalId(Long profissionalId);
-
-//    Optional<GradeTrabalho> findByHoraInicio(LocalTime horaInicio);
-//
-//    Optional<GradeTrabalho> findByHoraFim(LocalTime horaFim);
+	
+	Optional<GradeTrabalho> findByIdAndProfissionalId(Long id, Long profissionalId);
 
 }

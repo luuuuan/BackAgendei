@@ -41,7 +41,7 @@ public class GradeTrabalhoService {
 
         return new GradeTrabalhoResponseDTO(
                 gradeTrabalho.getId(),
-                gradeTrabalho.getProfissional().getId(),
+                gradeTrabalho.getProfissional.getId(),
                 gradeTrabalho.getDiaInicio(),
                 gradeTrabalho.getDiaFim(),
                 gradeTrabalho.getHorarioInicio(),
@@ -75,5 +75,32 @@ public class GradeTrabalhoService {
 
 
     }
+	
+	public GradeTrabalhoResponseDTO atualizarGrade(Long id, GradeTrabalhoCreateDTO gradeTrabalhoCreateDTO){
+		GradeTrabalho gradeTrabalho = gradeTrabalhoRepository.findByIdAndProfissionalId(id, gradeTrabalhoCreateDTO.getProfissionalId())
+			.orElseThrow(()-> new RuntimeException("Grade de trabalho não encontrada"));
+	
+        gradeTrabalho.setHorarioInicio(gradeTrabalhoCreateDTO.getHorarioInicio());
+        gradeTrabalho.setHorarioFim(gradeTrabalhoCreateDTO.getHorarioFim());
+        gradeTrabalho.setDiaInicio(gradeTrabalhoCreateDTO.getDiaInicio());
+        gradeTrabalho.setDiaFim(gradeTrabalhoCreateDTO.getDiaFim());
+        gradeTrabalho.setInicioIntervalo(gradeTrabalhoCreateDTO.getInicioIntervalo());
+        gradeTrabalho.setFimIntervalo(gradeTrabalhoCreateDTO.getFimIntervalo());
+        gradeTrabalho.setAtivo(gradeTrabalhoCreateDTO.getAtivo());
+		
+		gradeTrabalhoRepository.save(gradeTrabalho);
+		
+		return new GradeTrabalhoResponseDTO(
+                gradeTrabalho.getId(),
+                gradeTrabalho.getProfissional().getId(),
+                gradeTrabalho.getDiaInicio(),
+                gradeTrabalho.getDiaFim(),
+                gradeTrabalho.getHorarioInicio(),
+                gradeTrabalho.getHorarioFim(),
+                gradeTrabalho.getInicioIntervalo(),
+                gradeTrabalho.getFimIntervalo(),
+                gradeTrabalho.getAtivo()
+		);
+	}
 
 }
