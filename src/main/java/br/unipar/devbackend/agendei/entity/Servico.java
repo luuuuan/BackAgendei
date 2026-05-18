@@ -1,9 +1,7 @@
 package br.unipar.devbackend.agendei.entity;
 
 
-import br.unipar.devbackend.agendei.enums.ServicoExecucaoStatus;
-import br.unipar.devbackend.agendei.enums.ServicoStatus;
-import br.unipar.devbackend.agendei.enums.StatusServico;
+import br.unipar.devbackend.agendei.enums.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -34,9 +32,6 @@ public class Servico {
     @Enumerated(EnumType.STRING)
     private ServicoExecucaoStatus statusExecucaoServico;
 
-
-    private BigDecimal valor;
-
     @ManyToOne
     @JoinColumn(name = "profissional_id")
     private Profissional profissional;
@@ -47,7 +42,11 @@ public class Servico {
 
     private String descricao;
 
-    private BigDecimal valorSerico;
+    private BigDecimal valorServico;
 
+    @Enumerated(EnumType.STRING)
+    private TipoCobranca tipoCobranca;
 
+    @Enumerated(EnumType.STRING)
+    private LocalAtendimento localAtendimento;
 }

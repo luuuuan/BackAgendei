@@ -1,8 +1,12 @@
 package br.unipar.devbackend.agendei.DTO.create;
 
 import br.unipar.devbackend.agendei.entity.Profissional;
+import br.unipar.devbackend.agendei.enums.LocalAtendimento;
 import br.unipar.devbackend.agendei.enums.ServicoExecucaoStatus;
 import br.unipar.devbackend.agendei.enums.StatusServico;
+import br.unipar.devbackend.agendei.enums.TipoCobranca;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -36,5 +40,9 @@ public class ServicoCreateDTO {
 
     @NotNull(message = "Adicione uma descrição ao serviço")
     private String descricao;
+
+    private TipoCobranca tipoCobranca;
+
+    private LocalAtendimento localAtendimento;
 
 }

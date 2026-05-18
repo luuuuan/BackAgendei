@@ -1,9 +1,7 @@
 package br.unipar.devbackend.agendei.DTO.response;
 
 import br.unipar.devbackend.agendei.entity.Profissional;
-import br.unipar.devbackend.agendei.enums.ServicoExecucaoStatus;
-import br.unipar.devbackend.agendei.enums.StatusProfissional;
-import br.unipar.devbackend.agendei.enums.StatusServico;
+import br.unipar.devbackend.agendei.enums.*;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
@@ -36,4 +34,8 @@ public class ServicoResponseDTO {
     private String nome;
 
     private String descricao;
+
+    private TipoCobranca tipoCobranca;
+
+    private LocalAtendimento localAtendimento;
 }

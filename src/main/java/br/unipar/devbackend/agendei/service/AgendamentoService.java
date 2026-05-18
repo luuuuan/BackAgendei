@@ -7,6 +7,7 @@ import br.unipar.devbackend.agendei.DTO.response.AgendamentoResponseDTO;
 import br.unipar.devbackend.agendei.entity.*;
 import br.unipar.devbackend.agendei.enums.StatusAgendamento;
 import br.unipar.devbackend.agendei.enums.StatusHorario;
+import br.unipar.devbackend.agendei.enums.TipoCobranca;
 import br.unipar.devbackend.agendei.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,9 +90,13 @@ public class AgendamentoService {
                 enderecoRepository.findById(agendamentoCreateDTO.getEnderecoId())
                 .orElse(null) : null;
 
-        BigDecimal valorTotalAgendamento = servicos.stream()
-                .map(Servico::getValor)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal valorTotalAgendamento = servicos.stream().map(s -> {
+            if (s.getTipoCobranca() == TipoCobranca.FIXO) {
+                return s.getValorServico();
+            } else {
+                return s.getValorServico().multiply(BigDecimal.valueOf(agendamentoCreateDTO.getQuantidade()));
+            }
+        }).reduce(BigDecimal.ZERO, BigDecimal::add);
 
         Agendamento agendamento = new Agendamento();
 
@@ -112,7 +117,10 @@ public class AgendamentoService {
 
         agendamentoRepository.save(agendamento);
 
-        marcarHorarioIndisponivel(agendamentoCreateDTO.getProfissionalId(), agendamentoCreateDTO.getDataAgendamento(), agendamentoCreateDTO.getHoraInicio());
+        marcarHorarioIndisponivel(
+                agendamentoCreateDTO.getProfissionalId(),
+                agendamentoCreateDTO.getDataAgendamento(),
+                agendamentoCreateDTO.getHoraInicio());
 
         return mapperDTO(agendamento);
     }
@@ -188,6 +196,7 @@ public class AgendamentoService {
         }
 
         //===============================
+        
 
 
 
