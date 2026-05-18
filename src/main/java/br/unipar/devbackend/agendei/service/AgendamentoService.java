@@ -39,6 +39,11 @@ public class AgendamentoService {
     @Autowired
     private HorarioDisponivelRepository horarioDisponivelRepository;
 
+    @Autowired
+    private  GradeTrabalhoRepository gradeTrabalhoRepository;
+    @Autowired
+    private FolgaRepository folgaRepository;
+
     public AgendamentoResponseDTO mapperDTO(Agendamento agendamento){
 
         return new  AgendamentoResponseDTO(
@@ -158,7 +163,33 @@ public class AgendamentoService {
 
 
     public List<String>
-        buscarHorariosDisponiveis(Long profissionalId, LocalDate data) {
+        buscarHorariosDisponiveis(Long profissionalId, LocalDate data, Long servicoId) {
+
+        List<GradeTrabalho> listaGrade = gradeTrabalhoRepository.findByProfissionalId(profissionalId);
+
+        Optional<GradeTrabalho> gradeAtiva = listaGrade.stream().filter(g -> g.getAtivo() == true).findFirst();
+
+        GradeTrabalho gradeTrabalho = gradeAtiva.orElseThrow(() -> new RuntimeException("Nenhuma grade ativa encontrada"));
+
+        if(data.getDayOfWeek().getValue() > gradeTrabalho.getDiaFim().getValue() ||
+                data.getDayOfWeek().getValue() < gradeTrabalho.getDiaFim().getValue()){
+            return new ArrayList<>();
+        }
+        //===============================================================
+        Servico servico = servicoRepository.findById(servicoId)
+                .orElseThrow(() -> new RuntimeException("Servico não encontrado"));
+
+        Integer duracao = servico.getDuracaoMinutos();
+
+        Boolean folgaProfissional = folgaRepository.existsByProfissionalIdAndData(profissionalId, data);
+
+        if(folgaProfissional == true){
+            return new ArrayList<>();
+        }
+
+        //===============================
+
+
 
         return horarioDisponivelRepository.findByProfissionalIdAndData(profissionalId, data)
                         .stream()

@@ -63,11 +63,12 @@ public class AgendamentoController {
     @GetMapping("/disponibilidade")
     public ResponseEntity<List<String>> disponibilidade(
             @RequestParam Long profissionalId,
-            @RequestParam LocalDate dataAgendamento) {
+            @RequestParam LocalDate dataAgendamento,
+            @RequestParam Long servicoId) {
 
 
         List<String> agendamentoResponseDTO =
-                agendamentoService.buscarHorariosDisponiveis(profissionalId, dataAgendamento);
+                agendamentoService.buscarHorariosDisponiveis(profissionalId, dataAgendamento, servicoId);
 
         return ResponseEntity.ok(agendamentoResponseDTO);
     }

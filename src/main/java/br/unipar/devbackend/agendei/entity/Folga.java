@@ -1,42 +1,38 @@
 package br.unipar.devbackend.agendei.entity;
 
-import jakarta.annotation.Nullable;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 
-public class GradeTrabalho {
+public class Folga {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private LocalDate data;
+
     @ManyToOne
     private Profissional profissional;
 
-    private DayOfWeek diaInicio;
+    private Boolean diaInteiro;
 
-    private DayOfWeek diaFim;
+    private LocalTime horaInicio;
 
-    private LocalTime horarioInicio;
+    private LocalTime horaFim;
 
-    private LocalTime horarioFim;
+    private String motivo;
 
-    private LocalTime inicioIntervalo;
-
-    private LocalTime fimIntervalo;
-
-    private Boolean ativo;
 }
