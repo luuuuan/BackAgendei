@@ -25,9 +25,9 @@ public class GradeTrabalhoResponseDTO {
 
     private DayOfWeek diaFim;
 
-    private LocalTime horarioInicio;
+    private LocalTime horaInicio;
 
-    private LocalTime horarioFim;
+    private LocalTime horaFim;
 
     private LocalTime inicioIntervalo;
 

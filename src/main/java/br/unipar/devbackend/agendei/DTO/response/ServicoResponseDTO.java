@@ -29,6 +29,8 @@ public class ServicoResponseDTO {
 
     private Long profissionalId;
 
+    private String nomeProfissional;
+
     private String nome;
 
     private String descricao;

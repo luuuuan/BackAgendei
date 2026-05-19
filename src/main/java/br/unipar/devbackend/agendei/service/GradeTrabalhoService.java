@@ -10,6 +10,7 @@ import br.unipar.devbackend.agendei.repository.ProfissionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 @Service
@@ -25,14 +26,27 @@ public class GradeTrabalhoService {
 
         Profissional profissional = profissionalRepository.findById(gradeTrabalhoCreateDTO.getProfissionalId())
                 .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+        DayOfWeek inicio;
+        DayOfWeek fim;
+
+        if(gradeTrabalhoCreateDTO.getDiasSemana().equals("SEG_SEX")){
+            inicio = DayOfWeek.MONDAY;
+            fim = DayOfWeek.FRIDAY;
+        } else if (gradeTrabalhoCreateDTO.getDiasSemana().equals("SEG_SAB")) {
+            inicio = DayOfWeek.MONDAY;
+            fim = DayOfWeek.SATURDAY;
+        }else{
+            inicio = DayOfWeek.MONDAY;
+            fim = DayOfWeek.SUNDAY;
+        }
 
         GradeTrabalho gradeTrabalho = new GradeTrabalho();
 
         gradeTrabalho.setProfissional(profissional);
-        gradeTrabalho.setHorarioInicio(gradeTrabalhoCreateDTO.getHorarioInicio());
-        gradeTrabalho.setHorarioFim(gradeTrabalhoCreateDTO.getHorarioFim());
-        gradeTrabalho.setDiaInicio(gradeTrabalhoCreateDTO.getDiaInicio());
-        gradeTrabalho.setDiaFim(gradeTrabalhoCreateDTO.getDiaFim());
+        gradeTrabalho.setHoraInicio(gradeTrabalhoCreateDTO.getHoraInicio());
+        gradeTrabalho.setHoraFim(gradeTrabalhoCreateDTO.getHoraFim());
+        gradeTrabalho.setDiaInicio(inicio);
+        gradeTrabalho.setDiaFim(fim);
         gradeTrabalho.setInicioIntervalo(gradeTrabalhoCreateDTO.getInicioIntervalo());
         gradeTrabalho.setFimIntervalo(gradeTrabalhoCreateDTO.getFimIntervalo());
         gradeTrabalho.setAtivo(gradeTrabalhoCreateDTO.getAtivo());
@@ -41,11 +55,11 @@ public class GradeTrabalhoService {
 
         return new GradeTrabalhoResponseDTO(
                 gradeTrabalho.getId(),
-                gradeTrabalho.getProfissional.getId(),
+                gradeTrabalho.getProfissional().getId(),
                 gradeTrabalho.getDiaInicio(),
                 gradeTrabalho.getDiaFim(),
-                gradeTrabalho.getHorarioInicio(),
-                gradeTrabalho.getHorarioFim(),
+                gradeTrabalho.getHoraInicio(),
+                gradeTrabalho.getHoraFim(),
                 gradeTrabalho.getInicioIntervalo(),
                 gradeTrabalho.getFimIntervalo(),
                 gradeTrabalho.getAtivo()
@@ -66,8 +80,8 @@ public class GradeTrabalhoService {
                                 gradeTrabalho.getProfissional().getId(),
                                 gradeTrabalho.getDiaInicio(),
                                 gradeTrabalho.getDiaFim(),
-                                gradeTrabalho.getHorarioInicio(),
-                                gradeTrabalho.getHorarioFim(),
+                                gradeTrabalho.getHoraInicio(),
+                                gradeTrabalho.getHoraFim(),
                                 gradeTrabalho.getInicioIntervalo(),
                                 gradeTrabalho.getFimIntervalo(),
                                 gradeTrabalho.getAtivo()))
@@ -80,8 +94,8 @@ public class GradeTrabalhoService {
 		GradeTrabalho gradeTrabalho = gradeTrabalhoRepository.findByIdAndProfissionalId(id, gradeTrabalhoCreateDTO.getProfissionalId())
 			.orElseThrow(()-> new RuntimeException("Grade de trabalho não encontrada"));
 	
-        gradeTrabalho.setHorarioInicio(gradeTrabalhoCreateDTO.getHorarioInicio());
-        gradeTrabalho.setHorarioFim(gradeTrabalhoCreateDTO.getHorarioFim());
+        gradeTrabalho.setHoraInicio(gradeTrabalhoCreateDTO.getHoraInicio());
+        gradeTrabalho.setHoraFim(gradeTrabalhoCreateDTO.getHoraFim());
         gradeTrabalho.setDiaInicio(gradeTrabalhoCreateDTO.getDiaInicio());
         gradeTrabalho.setDiaFim(gradeTrabalhoCreateDTO.getDiaFim());
         gradeTrabalho.setInicioIntervalo(gradeTrabalhoCreateDTO.getInicioIntervalo());
@@ -95,8 +109,8 @@ public class GradeTrabalhoService {
                 gradeTrabalho.getProfissional().getId(),
                 gradeTrabalho.getDiaInicio(),
                 gradeTrabalho.getDiaFim(),
-                gradeTrabalho.getHorarioInicio(),
-                gradeTrabalho.getHorarioFim(),
+                gradeTrabalho.getHoraInicio(),
+                gradeTrabalho.getHoraFim(),
                 gradeTrabalho.getInicioIntervalo(),
                 gradeTrabalho.getFimIntervalo(),
                 gradeTrabalho.getAtivo()

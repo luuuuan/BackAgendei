@@ -32,17 +32,13 @@ public class ServicoService {
                 servico.getStatusServico(),
                 servico.getStatusExecucaoServico(),
                 servico.getProfissional() != null ? servico.getProfissional().getId() : null,
+                servico.getProfissional() != null ? servico.getProfissional().getNome() : null,
                 servico.getNome(),
                 servico.getDescricao(),
                 servico.getTipoCobranca(),
                 servico.getLocalAtendimento(),
-                servico.getValorServico(),
-				servico.getProfissional() != null ? servico.getProfissional().getNome() : null
-//                servico.getTelefone(),
-//                servico.getDataNascimento(),
-//                servico.getEndereco().getId(),
-//                servico.getTipoUsuario(),
-//                servico.getPrestador() != null ? usuario.getPrestador().getId() : null
+                servico.getValorServico()
+
         );
 
     }
@@ -103,10 +99,12 @@ public class ServicoService {
                         s.getTempoBuffer(),
                         s.getStatusServico(),
                         s.getStatusExecucaoServico(),
-                        s.getProfissional().getId(),
+                        s.getProfissional() != null ? s.getProfissional().getId() : null,
+                        s.getProfissional() != null ? s.getProfissional().getNome() : null,
                         s.getNome(),
                         s.getDescricao(),
                         s.getTipoCobranca(),
+                        
                         s.getLocalAtendimento(),
                         s.getValorServico()
                         ))
