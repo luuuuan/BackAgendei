@@ -31,10 +31,13 @@ public class ServicoService {
                 servico.getTempoBuffer(),
                 servico.getStatusServico(),
                 servico.getStatusExecucaoServico(),
-                servico.getValor(),
-                servico.getProfissional().getId(),
+                servico.getProfissional() != null ? servico.getProfissional().getId() : null,
                 servico.getNome(),
-                servico.getDescricao()
+                servico.getDescricao(),
+                servico.getTipoCobranca(),
+                servico.getLocalAtendimento(),
+                servico.getValorServico(),
+				servico.getProfissional() != null ? servico.getProfissional().getNome() : null
 //                servico.getTelefone(),
 //                servico.getDataNascimento(),
 //                servico.getEndereco().getId(),
@@ -55,7 +58,7 @@ public class ServicoService {
         servico.setStatusServico(servicoCreateDTO.getStatusServico());
         servico.setStatusExecucaoServico(servicoCreateDTO.getStatusExecucaoServico());
         servico.setStatusExecucaoServico(servicoCreateDTO.getStatusExecucaoServico());
-        servico.setValor(servicoCreateDTO.getValor());
+        servico.setValorServico(servicoCreateDTO.getValorServico());
         servico.setProfissional(profissional);
         servico.setNome(servicoCreateDTO.getNome());
         servico.setDescricao(servicoCreateDTO.getDescricao());
@@ -80,7 +83,7 @@ public class ServicoService {
         return servicosProfissional.stream()
                 .map(s -> new ServicoResultadoConsultaDTO(
                         s.getDuracaoMinutos(),
-                        s.getValor(),
+                        s.getValorServico(),
                         s.getProfissional().getId(),
                         s.getNome(),
                         s.getDescricao()
@@ -100,10 +103,12 @@ public class ServicoService {
                         s.getTempoBuffer(),
                         s.getStatusServico(),
                         s.getStatusExecucaoServico(),
-                        s.getValor(),
                         s.getProfissional().getId(),
                         s.getNome(),
-                        s.getDescricao()
+                        s.getDescricao(),
+                        s.getTipoCobranca(),
+                        s.getLocalAtendimento(),
+                        s.getValorServico()
                         ))
                 .toList();
     }
@@ -113,7 +118,7 @@ public class ServicoService {
                 .orElseThrow(() -> new RuntimeException("Servicço não encontrado"));
         if(servicoCreateDTO.getNome() != null) servico.setNome(servicoCreateDTO.getNome());
         if(servicoCreateDTO.getDescricao() != null) servico.setDescricao(servicoCreateDTO.getDescricao());
-        if(servicoCreateDTO.getValor() != null) servico.setValor(servicoCreateDTO.getValor());
+        if(servicoCreateDTO.getValorServico() != null) servico.setValorServico(servicoCreateDTO.getValorServico());
         if(servicoCreateDTO.getDuracaoMinutos() != null) servico.setDuracaoMinutos(servicoCreateDTO.getDuracaoMinutos());
         if(servicoCreateDTO.getTempoBuffer() != null) servico.setTempoBuffer(servicoCreateDTO.getTempoBuffer());
         if(servicoCreateDTO.getStatusServico() != null) servico.setStatusServico(servicoCreateDTO.getStatusServico());
