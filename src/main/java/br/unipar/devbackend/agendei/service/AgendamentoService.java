@@ -82,19 +82,31 @@ public class AgendamentoService {
 
         List<Servico> servicos = servicoRepository.findAllById(agendamentoCreateDTO.getServicos());
 
+
         if (servicos.size() != agendamentoCreateDTO.getServicos().size()) {
             throw new RuntimeException("Um ou mais serviços não foram encontrados");
         }
+
+        int duracaoTotal = servicos.stream()
+                .mapToInt(Servico::getDuracaoMinutos)
+                .sum();
+
+        LocalTime horaFim = agendamentoCreateDTO.getHoraInicio().plusMinutes(duracaoTotal);
+
 
         Endereco endereco = agendamentoCreateDTO.getEnderecoId() != null ?
                 enderecoRepository.findById(agendamentoCreateDTO.getEnderecoId())
                 .orElse(null) : null;
 
+        double quantidade = agendamentoCreateDTO.getQuantidade() != null
+                ? agendamentoCreateDTO.getQuantidade()
+                : 1.0;
+
         BigDecimal valorTotalAgendamento = servicos.stream().map(s -> {
             if (s.getTipoCobranca() == TipoCobranca.FIXO) {
                 return s.getValorServico();
             } else {
-                return s.getValorServico().multiply(BigDecimal.valueOf(agendamentoCreateDTO.getQuantidade()));
+                return s.getValorServico().multiply(BigDecimal.valueOf(quantidade));
             }
         }).reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -103,7 +115,7 @@ public class AgendamentoService {
         agendamento.setDataAgendamento(agendamentoCreateDTO.getDataAgendamento());
         agendamento.setDataCriacao(agendamentoCreateDTO.getDataCriacao());
         agendamento.setHoraInicio(agendamentoCreateDTO.getHoraInicio());
-        agendamento.setHoraFim(agendamentoCreateDTO.getHoraFim());
+        agendamento.setHoraFim(horaFim);
         agendamento.setDataConfirmacao(agendamentoCreateDTO.getDataConfirmacao());
         agendamento.setStatusAgendamento(StatusAgendamento.PENDENTE);
         agendamento.setTaxaPlataforma(agendamentoCreateDTO.getTaxaPlataforma());
@@ -203,12 +215,21 @@ public class AgendamentoService {
 
         int fim = gradeTrabalho.getHoraFim().getHour() * 60 + gradeTrabalho.getHoraFim().getMinute();
 
+        LocalTime horaAtual = LocalTime.now();
+
+        LocalDate diaAtual = LocalDate.now();
+
         for (int minutos = inicio; minutos + duracao < fim; minutos += duracao) {
             int horasConvertido = minutos / 60;
 
             int minutosConvertido = minutos % 60;
 
             LocalTime tempo = LocalTime.of(horasConvertido, minutosConvertido);
+
+
+            if(tempo.isBefore(horaAtual) && data.isEqual(diaAtual)){
+                continue;
+            }
 
             if(gradeTrabalho.getInicioIntervalo() != null
                     && tempo.isAfter(gradeTrabalho.getInicioIntervalo())
