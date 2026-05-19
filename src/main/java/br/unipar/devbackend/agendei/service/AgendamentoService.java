@@ -158,7 +158,7 @@ public class AgendamentoService {
 
 
     public List<AgendamentoResponseDTO>
-            buscarPorUsuario(AgendamentoPesquisaDTO agendamentoPesquisaDTO) {
+    buscarPorUsuario(AgendamentoPesquisaDTO agendamentoPesquisaDTO) {
         List<Agendamento> agendamentos =
                 agendamentoRepository.findByUsuarioId(agendamentoPesquisaDTO.getUsuarioId());
 
@@ -171,7 +171,7 @@ public class AgendamentoService {
 
 
     public List<String>
-        buscarHorariosDisponiveis(Long profissionalId, LocalDate data, Long servicoId) {
+    buscarHorariosDisponiveis(Long profissionalId, LocalDate data, Long servicoId) {
 
         List<GradeTrabalho> listaGrade = gradeTrabalhoRepository.findByProfissionalId(profissionalId);
 
@@ -199,9 +199,9 @@ public class AgendamentoService {
         //===============================
 
         List<String> horarioDisponivel = new ArrayList<>();
-        int inicio = gradeTrabalho.getHorarioInicio().getHour() * 60 + gradeTrabalho.getHorarioInicio().getMinute();
+        int inicio = gradeTrabalho.getHoraInicio().getHour() * 60 + gradeTrabalho.getHoraInicio().getMinute();
 
-        int fim = gradeTrabalho.getHorarioFim().getHour() * 60 + gradeTrabalho.getHorarioFim().getMinute();
+        int fim = gradeTrabalho.getHoraFim().getHour() * 60 + gradeTrabalho.getHoraFim().getMinute();
 
         for (int minutos = inicio; minutos + duracao < fim; minutos += duracao) {
             int horasConvertido = minutos / 60;
@@ -255,7 +255,7 @@ public class AgendamentoService {
 
     private void liberarHorario(Agendamento agendamento){
         if(agendamento.getProfissional() == null || agendamento.getDataAgendamento() == null
-        || agendamento.getHoraInicio() == null) return;
+                || agendamento.getHoraInicio() == null) return;
 
         Optional<HorarioDisponivel> horarioDisponivel = horarioDisponivelRepository
                 .findByProfissionalIdAndData(agendamento.getProfissional().getId(), agendamento.getDataAgendamento())
@@ -264,8 +264,8 @@ public class AgendamentoService {
                 .findFirst();
 
         horarioDisponivel.ifPresent(h -> {
-           h.setStatusHorario(StatusHorario.DISPONIVEL);
-           horarioDisponivelRepository.save(h);
+            h.setStatusHorario(StatusHorario.DISPONIVEL);
+            horarioDisponivelRepository.save(h);
         });
     }
 

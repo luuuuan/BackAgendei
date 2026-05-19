@@ -22,15 +22,15 @@ public class GradeTrabalhoCreateDTO {
 
     private Long profissionalId;
 
-
+    private String diasSemana;
 
     private DayOfWeek diaInicio;
 
     private DayOfWeek diaFim;
 
-    private LocalTime horarioInicio;
+    private LocalTime horaInicio;
 
-    private LocalTime horarioFim;
+    private LocalTime horaFim;
 
     private LocalTime inicioIntervalo;
 
