@@ -41,10 +41,9 @@ public class GradeTrabalhoController {
    @PutMapping("/atualizar/{id}")
    public ResponseEntity<GradeTrabalhoResponseDTO> atualizar(
 			@PathVariable Long id,
-			@RequestBody GradeTrabalhoCreateDTO gradeTrabalhoCreateDTO) {
-       GradeTrabalhoResponseDTO gradeTrabalhoResponseDTO =
-               gradeTrabalhoService.atualizarGrade(id, gradeTrabalhoCreateDTO);
+			@RequestBody GradeTrabalhoCreateDTO gradeTrabalhoCreateDTO){
+		GradeTrabalhoResponseDTO gradeTrabalhoResponseDTO =
+				gradeTrabalhoService.atualizarGrade(id, gradeTrabalhoCreateDTO);
 
-       return ResponseEntity.ok(gradeTrabalhoResponseDTO);
-   }
+		return ResponseEntity.ok(gradeTrabalhoResponseDTO);
 }
