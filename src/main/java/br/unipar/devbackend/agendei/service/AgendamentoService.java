@@ -228,9 +228,7 @@ public class AgendamentoService {
                 continue;
             }
 
-            horarioDisponivel.add(tempo.toString());
-        }
->>>>>>> 58886bf3cdc607648141698d762ebc2e3462f0a4
+
 
 
         return horarioDisponivel;
