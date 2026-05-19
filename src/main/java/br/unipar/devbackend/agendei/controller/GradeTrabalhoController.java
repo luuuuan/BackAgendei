@@ -39,7 +39,7 @@ public class GradeTrabalhoController {
    }
    
    @PutMapping("/atualizar/{id}")
-   public @ResponseEntity<GradeTrabalhoResponseDTO> atualizar( 
+   public ResponseEntity<GradeTrabalhoResponseDTO> atualizar(
 			@PathVariable Long id,
 			@RequestBody GradeTrabalhoCreateDTO gradeTrabalhoCreateDTO){
 		GradeTrabalhoResponseDTO gradeTrabalhoResponseDTO = 
