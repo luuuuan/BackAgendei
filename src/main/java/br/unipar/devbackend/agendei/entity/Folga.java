@@ -27,6 +27,9 @@ public class Folga {
     @ManyToOne
     private Profissional profissional;
 
+    @ManyToOne
+    private Prestador prestador;
+
     private Boolean diaInteiro;
 
     private LocalTime horaInicio;
@@ -34,5 +37,7 @@ public class Folga {
     private LocalTime horaFim;
 
     private String motivo;
+
+    private Boolean ativo;
 
 }

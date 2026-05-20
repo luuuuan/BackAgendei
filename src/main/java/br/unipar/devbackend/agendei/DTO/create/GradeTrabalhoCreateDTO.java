@@ -22,6 +22,8 @@ public class GradeTrabalhoCreateDTO {
 
     private Long profissionalId;
 
+    private Long prestadorId;
+
     private String diasSemana;
 
     private DayOfWeek diaInicio;

@@ -42,8 +42,12 @@ public class AgendamentoService {
 
     @Autowired
     private  GradeTrabalhoRepository gradeTrabalhoRepository;
+
     @Autowired
     private FolgaRepository folgaRepository;
+
+    @Autowired
+    private PrestadorRepository prestadorRepository;
 
     public AgendamentoResponseDTO mapperDTO(Agendamento agendamento){
 
@@ -183,27 +187,40 @@ public class AgendamentoService {
 
 
     public List<String>
-    buscarHorariosDisponiveis(Long profissionalId, LocalDate data, Long servicoId) {
+    buscarHorariosDisponiveis(Long profissionalId, LocalDate data, Long servicoId, Long prestadorId) {
+        Servico servico = servicoRepository.findById(servicoId)
+                .orElseThrow(() -> new RuntimeException("Servico não encontrado"));
 
-        List<GradeTrabalho> listaGrade = gradeTrabalhoRepository.findByProfissionalId(profissionalId);
+        if (profissionalId == null){
+            prestadorId = servico.getPrestador().getId();
+        }
+
+        List<GradeTrabalho> listaGrade = profissionalId == null || profissionalId == 0 ?
+                gradeTrabalhoRepository.findByPrestadorId(prestadorId) :
+                gradeTrabalhoRepository.findByProfissionalId(profissionalId);
+
 
         Optional<GradeTrabalho> gradeAtiva = listaGrade.stream().filter(g -> g.getAtivo() == true).findFirst();
 
         GradeTrabalho gradeTrabalho = gradeAtiva.orElseThrow(() -> new RuntimeException("Nenhuma grade ativa encontrada"));
 
-        List<Agendamento> agendamentos = agendamentoRepository.findByProfissionalIdAndDataAgendamento(profissionalId, data);
+        List<Agendamento> agendamentos = profissionalId != null ?
+                agendamentoRepository.findByProfissionalIdAndDataAgendamento(profissionalId, data) :
+                agendamentoRepository.findByPrestadorIdAndDataAgendamento(prestadorId, data);
+
 
         if(data.getDayOfWeek().getValue() > gradeTrabalho.getDiaFim().getValue() ||
                 data.getDayOfWeek().getValue() < gradeTrabalho.getDiaInicio().getValue()){
             return new ArrayList<>();
         }
         //===============================================================
-        Servico servico = servicoRepository.findById(servicoId)
-                .orElseThrow(() -> new RuntimeException("Servico não encontrado"));
+
 
         Integer duracao = servico.getDuracaoMinutos();
 
-        Boolean folgaProfissional = folgaRepository.existsByProfissionalIdAndData(profissionalId, data);
+        Boolean folgaProfissional = profissionalId != null ?
+                folgaRepository.existsByProfissionalIdAndData(profissionalId, data) :
+                folgaRepository.existsByPrestadorIdAndData(prestadorId, data);
 
         if(folgaProfissional == true){
             return new ArrayList<>();

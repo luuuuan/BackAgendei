@@ -72,11 +72,6 @@ public class UsuarioController {
         return ResponseEntity.ok(clientes);
     }
 
-//    @GetMapping("/clientes")
-//    public ResponseEntity<List<UsuarioResponseDTO>> listarClientes() {
-//        List<UsuarioResponseDTO> clientes = usuarioService.listar();
-//        return ResponseEntity.ok(clientes);
-//    }
 
     @GetMapping("/buscar")
     public ResponseEntity<UsuarioResponseDTO> buscar(
@@ -105,10 +100,20 @@ public class UsuarioController {
     }
 
     @PostMapping("/redefinirSenha")
-    public ResponseEntity<?> redefinirSenha(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> redefinirSenha(
+            @RequestBody Map<String, String> body) {
         usuarioService.redefinirSenha(body.get("token"), body.get("novaSenha"));
         return  ResponseEntity.ok(Map.of("mensagem", "Senha redefinida!"));
 
+    }
+
+    @PatchMapping("/{id}/senha")
+    public ResponseEntity<?> atualizarSenha(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+
+        usuarioService.atualizarSenha(id, body.get("senhaAtual"), body.get("novaSenha"));
+        return ResponseEntity.ok(Map.of("mensagem", "Senha atualizada!"));
     }
 
 }

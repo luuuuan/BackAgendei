@@ -30,17 +30,19 @@ public class ServicoController {
 
 
     @GetMapping("/servicos")
-    public ResponseEntity<List<ServicoResponseDTO>> listar(){
-        List<ServicoResponseDTO> servicos = servicoService.listarServicos();
+    public ResponseEntity<List<ServicoResponseDTO>> listar(
+            @RequestParam (required = false) Long prestadorId){
+        List<ServicoResponseDTO> servicos = servicoService.listarServicos(prestadorId);
 
 
         return ResponseEntity.ok(servicos);
     }
 
     @GetMapping("/servicosProfissional/{id}")
-    public ResponseEntity<List<ServicoResultadoConsultaDTO>> listarProfissionais(
+    public ResponseEntity<List<ServicoResultadoConsultaDTO>> listarServicos(
             @PathVariable("id") Long profissionalId){
-        List<ServicoResultadoConsultaDTO> profissionaisServicos = servicoService.listarServicoProfissional(profissionalId);
+        List<ServicoResultadoConsultaDTO> profissionaisServicos =
+                servicoService.listarServicoProfissional(profissionalId);
 
 
         return ResponseEntity.ok(profissionaisServicos);

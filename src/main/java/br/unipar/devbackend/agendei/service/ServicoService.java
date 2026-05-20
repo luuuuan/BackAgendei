@@ -5,14 +5,17 @@ import br.unipar.devbackend.agendei.DTO.response.ProfissionalResponseDTO;
 import br.unipar.devbackend.agendei.DTO.response.ServicoResponseDTO;
 import br.unipar.devbackend.agendei.DTO.response.ServicoResultadoConsultaDTO;
 import br.unipar.devbackend.agendei.DTO.response.UsuarioResponseDTO;
+import br.unipar.devbackend.agendei.entity.Prestador;
 import br.unipar.devbackend.agendei.entity.Profissional;
 import br.unipar.devbackend.agendei.entity.Servico;
 import br.unipar.devbackend.agendei.entity.Usuario;
+import br.unipar.devbackend.agendei.repository.PrestadorRepository;
 import br.unipar.devbackend.agendei.repository.ProfissionalRepository;
 import br.unipar.devbackend.agendei.repository.ServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,8 +23,12 @@ public class ServicoService {
 
     @Autowired
     private ServicoRepository servicoRepository;
+
     @Autowired
     private ProfissionalRepository profissionalRepository;
+
+    @Autowired
+    private PrestadorRepository prestadorRepository;
 
     public ServicoResponseDTO mapperDTO(Servico servico){
 
@@ -37,15 +44,28 @@ public class ServicoService {
                 servico.getDescricao(),
                 servico.getTipoCobranca(),
                 servico.getLocalAtendimento(),
-                servico.getValorServico()
-
+                servico.getValorServico(),
+                servico.getPrestador() != null ? servico.getPrestador().getId() : null,
+                servico.getPrestador() != null && servico.getPrestador().getUsuario() != null
+                        ? servico.getPrestador().getUsuario().getNome()
+                        : null
         );
 
     }
     public ServicoResponseDTO criarServico(ServicoCreateDTO servicoCreateDTO){
-        Profissional profissional = profissionalRepository
-                .findById(servicoCreateDTO.getProfissionalId())
-                .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+
+        Profissional profissional = null;
+
+        Prestador prestador = null;
+
+        if(servicoCreateDTO.getProfissionalId() != null ){
+            profissional = profissionalRepository.findById(servicoCreateDTO.getProfissionalId())
+                            .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+
+        } else{
+            prestador = prestadorRepository.findById(servicoCreateDTO.getPrestadorId())
+                            .orElseThrow(() -> new RuntimeException("Prestador não encontrado"));
+        }
 
         Servico servico = new Servico();
 
@@ -58,6 +78,10 @@ public class ServicoService {
         servico.setProfissional(profissional);
         servico.setNome(servicoCreateDTO.getNome());
         servico.setDescricao(servicoCreateDTO.getDescricao());
+        servico.setTipoCobranca(servicoCreateDTO.getTipoCobranca());
+        servico.setLocalAtendimento(servicoCreateDTO.getLocalAtendimento());
+        servico.setDataCriacao(LocalDate.now());
+        servico.setPrestador(prestador);
 
         servicoRepository.save(servico);
 
@@ -68,29 +92,29 @@ public class ServicoService {
 
 
 
-    public  List<ServicoResultadoConsultaDTO> listarServicoProfissional(Long profissionalId) {
+    public  List<ServicoResultadoConsultaDTO>
+    listarServicoProfissional(Long profissionalId) {
 
-        List<Servico> servicosProfissional = servicoRepository.findByProfissionalId(profissionalId);
+        List<Servico> servicos = servicoRepository.findByProfissionalId(profissionalId);
 
-        if (servicosProfissional.isEmpty()) {
+        if (servicos.isEmpty()) {
             throw new RuntimeException("Nenhum serviço encontrado para o profissional informado.");
         }
 
-        return servicosProfissional.stream()
+        return servicos.stream()
                 .map(s -> new ServicoResultadoConsultaDTO(
                         s.getDuracaoMinutos(),
                         s.getValorServico(),
                         s.getProfissional().getId(),
                         s.getNome(),
-                        s.getDescricao()
-
-                        )
-
+                        s.getDescricao())
                 ).toList();
     }
-    public List<ServicoResponseDTO> listarServicos(){
+    public List<ServicoResponseDTO> listarServicos(Long prestadorId){
 
-        List<Servico> servicos = servicoRepository.findAll();
+        List<Servico> servicos = prestadorId != null
+                ? servicoRepository.findByPrestadorId(prestadorId)
+                : servicoRepository.findAll();
 
         return servicos.stream()
                 .map(s -> new ServicoResponseDTO(
@@ -104,9 +128,12 @@ public class ServicoService {
                         s.getNome(),
                         s.getDescricao(),
                         s.getTipoCobranca(),
-                        
                         s.getLocalAtendimento(),
-                        s.getValorServico()
+                        s.getValorServico(),
+                        s.getPrestador() != null ? s.getPrestador().getId() : null,
+                        s.getPrestador() != null && s.getPrestador().getUsuario() != null
+                                ? s.getPrestador().getUsuario().getNome()
+                                : null
                         ))
                 .toList();
     }

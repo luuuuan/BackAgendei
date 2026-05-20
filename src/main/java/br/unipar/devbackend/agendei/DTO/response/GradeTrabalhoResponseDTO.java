@@ -33,5 +33,6 @@ public class GradeTrabalhoResponseDTO {
 
     private LocalTime fimIntervalo;
 
-    private Boolean ativo;
+    private Long prestadorId;
+
 }

@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface GradeTrabalhoRepository extends JpaRepository <GradeTrabalho, Long> {
 
     List<GradeTrabalho> findByProfissionalId(Long profissionalId);
+
+    List<GradeTrabalho> findByPrestadorId(Long prestadorId);
 	
 	Optional<GradeTrabalho> findByIdAndProfissionalId(Long id, Long profissionalId);
 

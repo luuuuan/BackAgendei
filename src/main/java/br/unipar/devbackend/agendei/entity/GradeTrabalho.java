@@ -26,6 +26,9 @@ public class GradeTrabalho {
     @ManyToOne
     private Profissional profissional;
 
+    @ManyToOne
+    private Prestador prestador;
+
     private DayOfWeek diaInicio;
 
     private DayOfWeek diaFim;

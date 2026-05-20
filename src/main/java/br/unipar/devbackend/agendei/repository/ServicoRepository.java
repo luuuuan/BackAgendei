@@ -10,4 +10,5 @@ import java.util.List;
 public interface ServicoRepository extends JpaRepository<Servico, Long> {
     List<Servico> findByProfissionalId(Long profissionalId);
 
+    List<Servico> findByPrestadorId(Long prestadorId);
 }

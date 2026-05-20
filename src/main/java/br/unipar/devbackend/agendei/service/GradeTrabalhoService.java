@@ -4,8 +4,10 @@ package br.unipar.devbackend.agendei.service;
 import br.unipar.devbackend.agendei.DTO.create.GradeTrabalhoCreateDTO;
 import br.unipar.devbackend.agendei.DTO.response.GradeTrabalhoResponseDTO;
 import br.unipar.devbackend.agendei.entity.GradeTrabalho;
+import br.unipar.devbackend.agendei.entity.Prestador;
 import br.unipar.devbackend.agendei.entity.Profissional;
 import br.unipar.devbackend.agendei.repository.GradeTrabalhoRepository;
+import br.unipar.devbackend.agendei.repository.PrestadorRepository;
 import br.unipar.devbackend.agendei.repository.ProfissionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +23,23 @@ public class GradeTrabalhoService {
     @Autowired
     private ProfissionalRepository profissionalRepository;
 
+    @Autowired
+    private PrestadorRepository  prestadorRepository;
+
     public GradeTrabalhoResponseDTO cadastraJornada(GradeTrabalhoCreateDTO  gradeTrabalhoCreateDTO) {
 
+        Profissional profissional = null;
 
-        Profissional profissional = profissionalRepository.findById(gradeTrabalhoCreateDTO.getProfissionalId())
-                .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+        Prestador prestador = null;
+
+        if(gradeTrabalhoCreateDTO.getProfissionalId() != null){
+            profissional = profissionalRepository.findById(gradeTrabalhoCreateDTO.getProfissionalId())
+                    .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+        }else{
+            prestador = prestadorRepository.findById(gradeTrabalhoCreateDTO.getPrestadorId())
+                    .orElseThrow(() -> new RuntimeException("Prestador não encontrado"));
+        }
+
         DayOfWeek inicio;
         DayOfWeek fim;
 
@@ -50,19 +64,20 @@ public class GradeTrabalhoService {
         gradeTrabalho.setInicioIntervalo(gradeTrabalhoCreateDTO.getInicioIntervalo());
         gradeTrabalho.setFimIntervalo(gradeTrabalhoCreateDTO.getFimIntervalo());
         gradeTrabalho.setAtivo(gradeTrabalhoCreateDTO.getAtivo());
+        gradeTrabalho.setPrestador(prestador);
 
         gradeTrabalhoRepository.save(gradeTrabalho);
 
         return new GradeTrabalhoResponseDTO(
                 gradeTrabalho.getId(),
-                gradeTrabalho.getProfissional().getId(),
+                gradeTrabalho.getProfissional() != null ? gradeTrabalho.getProfissional().getId() : null,
                 gradeTrabalho.getDiaInicio(),
                 gradeTrabalho.getDiaFim(),
                 gradeTrabalho.getHoraInicio(),
                 gradeTrabalho.getHoraFim(),
                 gradeTrabalho.getInicioIntervalo(),
                 gradeTrabalho.getFimIntervalo(),
-                gradeTrabalho.getAtivo()
+                gradeTrabalho.getPrestador() != null ? gradeTrabalho.getPrestador().getId() : null
 
 
         );
@@ -75,16 +90,18 @@ public class GradeTrabalhoService {
 
 
         return gradeTrabalhoLista.stream()
+                .filter(f -> f.getAtivo() == true)
                         .map( gradeTrabalho ->  new GradeTrabalhoResponseDTO(
                                 gradeTrabalho.getId(),
-                                gradeTrabalho.getProfissional().getId(),
+                                gradeTrabalho.getProfissional() != null ? gradeTrabalho.getProfissional().getId() : null,
                                 gradeTrabalho.getDiaInicio(),
                                 gradeTrabalho.getDiaFim(),
                                 gradeTrabalho.getHoraInicio(),
                                 gradeTrabalho.getHoraFim(),
                                 gradeTrabalho.getInicioIntervalo(),
                                 gradeTrabalho.getFimIntervalo(),
-                                gradeTrabalho.getAtivo()))
+                                gradeTrabalho.getPrestador() != null ? gradeTrabalho.getPrestador().getId() : null
+                        ))
                 .toList();
 
 
@@ -106,15 +123,25 @@ public class GradeTrabalhoService {
 		
 		return new GradeTrabalhoResponseDTO(
                 gradeTrabalho.getId(),
-                gradeTrabalho.getProfissional().getId(),
+                gradeTrabalho.getProfissional() != null ? gradeTrabalho.getProfissional().getId() : null,
                 gradeTrabalho.getDiaInicio(),
                 gradeTrabalho.getDiaFim(),
                 gradeTrabalho.getHoraInicio(),
                 gradeTrabalho.getHoraFim(),
                 gradeTrabalho.getInicioIntervalo(),
                 gradeTrabalho.getFimIntervalo(),
-                gradeTrabalho.getAtivo()
-		);
+                gradeTrabalho.getPrestador() != null ? gradeTrabalho.getPrestador().getId() : null
+
+        );
 	}
+
+    public void desativaGrade(Long id){
+        GradeTrabalho gradeTrabalho = gradeTrabalhoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Grade não encontrada"));
+
+        gradeTrabalho.setAtivo(false);
+
+        gradeTrabalhoRepository.save(gradeTrabalho);
+    }
 
 }

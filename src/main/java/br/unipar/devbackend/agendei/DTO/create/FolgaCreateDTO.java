@@ -21,8 +21,9 @@ public class FolgaCreateDTO {
 
     private LocalDate data;
 
-    @NotNull(message = "Profissional deve ser informado")
     private Long profissionalId;
+
+    private Long prestadorId;
 
     private Boolean diaInteiro;
 
@@ -31,4 +32,7 @@ public class FolgaCreateDTO {
     private LocalTime horaFim;
 
     private String motivo;
+
+    private Boolean ativo;
+
 }

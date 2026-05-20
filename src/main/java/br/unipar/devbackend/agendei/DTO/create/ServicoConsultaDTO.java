@@ -14,4 +14,6 @@ public class ServicoConsultaDTO {
 
     private String descricao;
 
+    private Long prestadorId;
+
 }

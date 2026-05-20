@@ -171,7 +171,20 @@ public class UsuarioService {
                                 u.getTipoUsuario(),
                                 u.getPrestador() != null ? u.getPrestador().getId() : null
                                 )).toList();
+        /*
+        * return folga.stream()
+                .map( f -> new FolgaResponseDTO(
+                f.getId(),
+                f.getData(),
+                f.getProfissional().getId(),
+                f.getDiaInteiro(),
+                f.getHoraInicio(),
+                f.getHoraFim(),
+                f.getMotivo()
+                )).toList();
 
+
+        * */
 
 
     }
@@ -282,6 +295,23 @@ public class UsuarioService {
                 //usuario.getPrestador() != null ? usuario.getPrestador().getId() : null
 
         );
+    }
+
+    public void atualizarSenha(Long id, String senhaAtual, String novaSenha){
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if(!passwordEncoder.matches(senhaAtual, usuario.getSenha())){
+            throw new RuntimeException("Senha atual incorreta!");
+        }
+
+        if(passwordEncoder.matches(novaSenha, usuario.getSenha())){
+            throw new RuntimeException("Nova senha não pode ser a mesma que a anterior");
+        }
+
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
+
+        usuarioRepository.save(usuario);
     }
 
 

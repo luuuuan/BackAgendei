@@ -27,10 +27,6 @@ public class ServicoCreateDTO {
 
     private ServicoExecucaoStatus statusExecucaoServico;
 
-//    @NotNull(message = "Valor do serviço deve ser informado!")
-//    private BigDecimal valor;
-
-    @NotNull(message = "Profissional deve ser informado")
     private Long profissionalId;
 
     @NotNull(message = "Nome do serviço deve ser informado")
@@ -46,5 +42,7 @@ public class ServicoCreateDTO {
     private LocalAtendimento localAtendimento;
 
     @NotNull(message = "Valor do serviço deve ser informado!")
-    private BigDecimal ValorServico;
+    private BigDecimal valorServico;
+
+    private Long prestadorId;
 }

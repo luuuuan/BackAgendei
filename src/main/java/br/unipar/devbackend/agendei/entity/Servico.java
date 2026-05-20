@@ -49,4 +49,10 @@ public class Servico {
 
     @Enumerated(EnumType.STRING)
     private LocalAtendimento localAtendimento;
+
+    @ManyToOne
+    @JoinColumn(name = "prestador_id")
+    private Prestador prestador;
+
+    private String nomePrestador;
 }

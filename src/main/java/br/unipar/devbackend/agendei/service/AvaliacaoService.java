@@ -39,6 +39,11 @@ public class AvaliacaoService {
         Profissional profissional = profissionalRepository.findById(avaliacaoCreateDTO.getProfissionalId())
                 .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
 
+        if (avaliacaoRepository.existsByAgendamentoIdAndUsuarioId(avaliacaoCreateDTO.getAgendamentoId(),
+                avaliacaoCreateDTO.getUsuarioId())){
+            throw new RuntimeException("Agendamento já avaliado!");
+        }
+
         Avaliacao avaliacao = new Avaliacao();
 
         avaliacao.setNota(avaliacaoCreateDTO.getNota());

@@ -20,6 +20,9 @@ public class FolgaResponseDTO {
 
     private Long profissional;
 
+    private Long prestadorId;
+
+
     private Boolean diaInteiro;
 
     private LocalTime horaInicio;

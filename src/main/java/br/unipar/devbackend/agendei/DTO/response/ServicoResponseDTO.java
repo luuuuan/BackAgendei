@@ -41,4 +41,24 @@ public class ServicoResponseDTO {
 
     private BigDecimal valorServico;
 
+    private Long prestadorId;
+
+    private String nomePrestador;
+
+//    public ServicoResponseDTO(Servico servico){
+//        servico.getId(),
+//                servico.getDuracaoMinutos(),
+//                servico.getTempoBuffer(),
+//                servico.getStatusServico(),
+//                servico.getStatusExecucaoServico(),
+//                servico.getProfissional() != null ? servico.getProfissional().getId() : null,
+//                servico.getProfissional() != null ? servico.getProfissional().getNome() : null,
+//                servico.getNome(),
+//                servico.getDescricao(),
+//                servico.getTipoCobranca(),
+//                servico.getLocalAtendimento(),
+//                servico.getValorServico(),
+//                servico.getPrestador().getId()
+//    }
+
 }

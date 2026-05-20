@@ -87,8 +87,10 @@ public class ProfissionalService {
 
     public List<ProfissionalResponseDTO>
     listarProfissionais(Long prestadorId) {
-        List<Profissional> profissionais = profissionalRepository.findByPrestador_Id(prestadorId);
 
+        List<Profissional> profissionais = prestadorId == null
+                ? profissionalRepository.findAll()
+                : profissionalRepository.findByPrestador_Id(prestadorId);
 
         return profissionais.stream()
                 .map( p ->  new ProfissionalResponseDTO(
@@ -104,6 +106,8 @@ public class ProfissionalService {
                         p.getAtendeADomicilio())
 
                 ).toList();
+
+
     }
 
     public List<ProfissionalResponseDTO>

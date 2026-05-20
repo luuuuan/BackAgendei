@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AvaliacaoCreateDTO {
+
     @NotNull(message = "Nota deve ser informada")
     private Integer nota;
 
