@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -110,11 +111,20 @@ public class ServicoService {
                         s.getDescricao())
                 ).toList();
     }
+
     public List<ServicoResponseDTO> listarServicos(Long prestadorId){
 
-        List<Servico> servicos = prestadorId != null
-                ? servicoRepository.findByPrestadorId(prestadorId)
-                : servicoRepository.findAll();
+        List<Servico> porPrestador = servicoRepository.findByPrestadorId(prestadorId);
+
+        List<Long> profissionaisIds = profissionalRepository.findByPrestador_Id(prestadorId)
+                .stream().map(Profissional::getId).toList();
+
+        List<Servico> porProfissional = servicoRepository.findByProfissionalIdIn(profissionaisIds);
+
+        List<Servico> servicos = new ArrayList<>();
+
+        servicos.addAll(porPrestador);
+        servicos.addAll(porProfissional);
 
         return servicos.stream()
                 .map(s -> new ServicoResponseDTO(

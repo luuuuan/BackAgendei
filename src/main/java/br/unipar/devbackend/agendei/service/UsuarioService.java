@@ -8,10 +8,7 @@ import br.unipar.devbackend.agendei.config.ConfiguracaoSeguranca;
 import br.unipar.devbackend.agendei.entity.*;
 import br.unipar.devbackend.agendei.enums.StatusProfissional;
 import br.unipar.devbackend.agendei.enums.UserTipo;
-import br.unipar.devbackend.agendei.repository.EnderecoRepository;
-import br.unipar.devbackend.agendei.repository.PrestadorRepository;
-import br.unipar.devbackend.agendei.repository.ProfissionalRepository;
-import br.unipar.devbackend.agendei.repository.UsuarioRepository;
+import br.unipar.devbackend.agendei.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -47,6 +45,9 @@ public class UsuarioService {
 
     @Autowired
     private ProfissionalRepository profissionalRepository;
+
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
 
     public UsuarioResponseDTO mapperDTO(Usuario usuario){
 
@@ -155,9 +156,8 @@ public class UsuarioService {
         );
     }
 
-    public List<UsuarioResponseDTO> listar(String cpf, Long prestadorId){
-
-        List<Usuario> usuario = usuarioRepository.findByCpfAndPrestadorId(cpf, prestadorId);
+    public List<UsuarioResponseDTO> listar(Long prestadorId){
+        List<Usuario> usuario = usuarioRepository.findClientesByPrestadorId(prestadorId);
 
         return usuario.stream()
                         .map(u -> new UsuarioResponseDTO(
@@ -171,20 +171,8 @@ public class UsuarioService {
                                 u.getTipoUsuario(),
                                 u.getPrestador() != null ? u.getPrestador().getId() : null
                                 )).toList();
-        /*
-        * return folga.stream()
-                .map( f -> new FolgaResponseDTO(
-                f.getId(),
-                f.getData(),
-                f.getProfissional().getId(),
-                f.getDiaInteiro(),
-                f.getHoraInicio(),
-                f.getHoraFim(),
-                f.getMotivo()
-                )).toList();
 
 
-        * */
 
 
     }
@@ -192,8 +180,7 @@ public class UsuarioService {
 
     public UsuarioLoginResponseDTO logar(UsuarioLoginDTO usuarioLoginDTO){
         Usuario usuario = usuarioRepository
-                .findByEmail(
-                        usuarioLoginDTO.getEmail())
+                .findByEmail(usuarioLoginDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("E-mail ou senha incorreto!"));
 
 //        Profissional profissional = profissionalRepository.findByPrestador_Id()

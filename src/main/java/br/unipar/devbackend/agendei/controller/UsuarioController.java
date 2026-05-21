@@ -65,10 +65,9 @@ public class UsuarioController {
 
     @GetMapping("/clientes")
     public ResponseEntity<List<UsuarioResponseDTO>> listarClientes(
-            @RequestParam (required = false) String cpf,
             @RequestParam (required = false) Long prestadorId)
     {
-        List<UsuarioResponseDTO> clientes = usuarioService.listar(cpf, prestadorId);
+        List<UsuarioResponseDTO> clientes = usuarioService.listar(prestadorId);
         return ResponseEntity.ok(clientes);
     }
 

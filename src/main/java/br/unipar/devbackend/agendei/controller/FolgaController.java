@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,8 @@ public class FolgaController {
 
     @PatchMapping("/desativar/{id}")
     public ResponseEntity<?> excluirFolga(
-            @PathVariable Long id){
+            @PathVariable Long id)
+            {
         folgaService.atualizaFolga(id);
 
         return ResponseEntity.ok(Map.of("mensagem", "Folga atualizada!"));

@@ -18,4 +18,6 @@ public interface FolgaRepository extends JpaRepository<Folga, Long> {
     Boolean existsByProfissionalIdAndData(Long profissionalId, LocalDate data);
 
     Boolean existsByPrestadorIdAndData(Long prestadorId, LocalDate data);
+
+    Boolean existsByDataAndProfissionalIdAndPrestadorId(LocalDate data, Long profissionalId, Long prestadorId);
 }

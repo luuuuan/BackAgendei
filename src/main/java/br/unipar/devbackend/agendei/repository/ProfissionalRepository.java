@@ -17,4 +17,6 @@ public interface ProfissionalRepository extends JpaRepository<Profissional, Long
     Optional<Profissional> findByUsuario_Id(Long usuarioId);
 
     List<Profissional> findByPrestador_Id(Long aLong);
+
+    List<Long> findByPrestadorId(Long prestadorId);
 }

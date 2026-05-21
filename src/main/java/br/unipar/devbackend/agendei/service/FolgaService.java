@@ -9,9 +9,11 @@ import br.unipar.devbackend.agendei.repository.FolgaRepository;
 import br.unipar.devbackend.agendei.repository.PrestadorRepository;
 import br.unipar.devbackend.agendei.repository.ProfissionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -28,12 +30,24 @@ public class FolgaService {
 
     public FolgaResponseDTO criarFolga(FolgaCreateDTO  folgaCreateDTO) {
 
-        Profissional profissional = profissionalRepository.findById(folgaCreateDTO.getProfissionalId())
-                .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
 
-        Prestador prestador = prestadorRepository.findById(folgaCreateDTO.getPrestadorId())
-                .orElseThrow(() -> new RuntimeException("Prestador não encontrado"));
+        Profissional profissional = null;
 
+        Prestador prestador = null;
+        if(folgaCreateDTO.getProfissionalId()!=null) {
+            profissional = profissionalRepository.findById(folgaCreateDTO.getProfissionalId())
+                    .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+        }else{
+            prestador = prestadorRepository.findById(folgaCreateDTO.getPrestadorId())
+                    .orElseThrow(() -> new RuntimeException("Prestador não encontrado"));
+        }
+
+
+        LocalDate diaAtual = LocalDate.now();
+
+        if(folgaCreateDTO.getData().isBefore(diaAtual)) {
+            throw new RuntimeException("Dia da folga não pode ser anterior ao atual");
+        }
 
         if (folgaRepository.existsByProfissionalIdAndData(
                 folgaCreateDTO.getProfissionalId(),
@@ -59,8 +73,8 @@ public class FolgaService {
         return new  FolgaResponseDTO(
                 folga.getId(),
                 folga.getData(),
-                folga.getProfissional().getId(),
-                folga.getPrestador().getId(),
+                folga.getProfissional() != null ? folga.getProfissional().getId() : null,
+                folga.getPrestador() != null ? folga.getPrestador().getId() : null,
                 folga.getDiaInteiro(),
                 folga.getHoraInicio(),
                 folga.getHoraFim(),
@@ -76,16 +90,16 @@ public class FolgaService {
         List<Folga> folga = folgaRepository.findByProfissionalId(profissionalId);
 
         return folga.stream()
-                .filter(f -> f.getAtivo())
+                .filter(Folga::getAtivo)
                 .map( f -> new FolgaResponseDTO(
-                f.getId(),
-                f.getData(),
-                f.getProfissional().getId(),
-                f.getPrestador().getId(),
-                f.getDiaInteiro(),
-                f.getHoraInicio(),
-                f.getHoraFim(),
-                f.getMotivo()
+                        f.getId(),
+                        f.getData(),
+                        f.getProfissional() != null ? f.getProfissional().getId() : null,
+                        f.getPrestador() != null ? f.getPrestador().getId() : null,
+                        f.getDiaInteiro(),
+                        f.getHoraInicio(),
+                        f.getHoraFim(),
+                        f.getMotivo()
                 )).toList();
 
 
@@ -95,6 +109,15 @@ public class FolgaService {
         Folga folga = folgaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Folga inexistente!"));
 
+        LocalDate diaAtual = LocalDate.now();
+
+        if(folga.getData().isBefore(diaAtual)) {
+            throw new RuntimeException("Não é possível excluir folgas passadas");
+        }
+
+
         folga.setAtivo(false);
+
+        folgaRepository.save(folga);
     }
 }

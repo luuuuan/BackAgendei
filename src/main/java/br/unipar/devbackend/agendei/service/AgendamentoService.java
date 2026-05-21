@@ -16,6 +16,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,13 +64,13 @@ public class AgendamentoService {
                 agendamento.getValorTotal(),
                 agendamento.getObservacoes(),
                 agendamento.getUsuario() != null ? agendamento.getUsuario().getId() : null,
-                agendamento.getProfissional().getId(),
+                agendamento.getProfissional() != null ? agendamento.getProfissional().getId() : null,
                 agendamento.getServicos()
                         .stream()
                         .map(Servico::getId)
                         .toList(),
                 agendamento.getEndereco() != null ? agendamento.getEndereco().getId() : null,
-                agendamento.getPrestadorId()
+                agendamento.getPrestador() != null ? agendamento.getPrestador().getId() : null
         );
 
     }
@@ -80,9 +82,20 @@ public class AgendamentoService {
                 .findById(agendamentoCreateDTO.getUsuarioId())
                 .orElse(null) : null;
 
-        Profissional profissional = profissionalRepository
-                .findById(agendamentoCreateDTO.getProfissionalId())
-                .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+        Profissional profissional = null;
+
+        Prestador prestador = null;
+
+        if(agendamentoCreateDTO.getProfissionalId() != null){
+            profissional = profissionalRepository
+                    .findById(agendamentoCreateDTO.getProfissionalId())
+                    .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+        }else{
+            prestador = prestadorRepository.
+                    findById(agendamentoCreateDTO.getPrestadorId())
+                    .orElseThrow(() -> new RuntimeException("Prestador não encontrado"));
+
+        }
 
         List<Servico> servicos = servicoRepository.findAllById(agendamentoCreateDTO.getServicos());
 
@@ -129,7 +142,7 @@ public class AgendamentoService {
         agendamento.setProfissional(profissional);
         agendamento.setServicos(servicos);
         agendamento.setEndereco(endereco);
-        agendamento.setPrestadorId(profissional.getPrestador().getId());
+        agendamento.setPrestador(prestador);
 
         agendamentoRepository.save(agendamento);
 
@@ -162,9 +175,9 @@ public class AgendamentoService {
 
 
     public List<AgendamentoResponseDTO>
-    buscaAgendamento(AgendamentoPesquisaDTO agendamentoPesquisaDTO) {
+    buscaAgendamento(LocalDate dataAgendamento) {
         List<Agendamento> agendamentos =
-                agendamentoRepository.findByDataCriacao(agendamentoPesquisaDTO.getDataCriacao());
+                agendamentoRepository.findByDataAgendamento(dataAgendamento);
 
 
         return agendamentos.stream()
@@ -188,8 +201,10 @@ public class AgendamentoService {
 
     public List<String>
     buscarHorariosDisponiveis(Long profissionalId, LocalDate data, Long servicoId, Long prestadorId) {
+        LocalDate diaAtual = LocalDate.now();
+
         Servico servico = servicoRepository.findById(servicoId)
-                .orElseThrow(() -> new RuntimeException("Servico não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
 
         if (profissionalId == null){
             prestadorId = servico.getPrestador().getId();
@@ -232,19 +247,25 @@ public class AgendamentoService {
 
         int fim = gradeTrabalho.getHoraFim().getHour() * 60 + gradeTrabalho.getHoraFim().getMinute();
 
-        LocalTime horaAtual = LocalTime.now();
 
-        LocalDate diaAtual = LocalDate.now();
+
+
 
         for (int minutos = inicio; minutos + duracao < fim; minutos += duracao) {
+
+            LocalTime horaAtual = LocalTime.now();
+
             int horasConvertido = minutos / 60;
 
             int minutosConvertido = minutos % 60;
 
             LocalTime tempo = LocalTime.of(horasConvertido, minutosConvertido);
 
-
             if(tempo.isBefore(horaAtual) && data.isEqual(diaAtual)){
+                continue;
+            }
+
+            if (tempo.equals(horaAtual)) {
                 continue;
             }
 

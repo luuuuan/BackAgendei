@@ -72,6 +72,7 @@ public class Agendamento {
     @ManyToOne
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
-	
-	private Long prestadorId;
+
+    @ManyToOne
+	private Prestador prestador;
 }

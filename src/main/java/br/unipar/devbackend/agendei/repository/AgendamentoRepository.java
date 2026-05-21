@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
-    List<Agendamento> findByDataCriacao(LocalDate dataCriacao);
+    List<Agendamento> findByDataAgendamento(LocalDate dataCriacao);
 
     List<Agendamento> findByUsuarioId(Long usuarioId);
 
@@ -18,4 +18,6 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     List<Agendamento> findByProfissionalIdAndDataAgendamento(Long profissionalId, LocalDate data);
 
     List<Agendamento> findByPrestadorIdAndDataAgendamento(Long prestadorId, LocalDate data);
+
+    Boolean existsByUsuarioIdAndPrestadorId(Long usuarioId, Long prestadorId);
 }
