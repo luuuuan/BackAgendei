@@ -66,7 +66,7 @@ public class DadosBancariosService {
             throw new RuntimeException("Dados bancários não encontrado");
         }
 
-        DadosBancarios dadosBancarios = dadosBancariosRepository.findById(id)
+        DadosBancarios dadosBancarios = dadosBancariosRepository.findByPrestadorId(id)
                 .orElseThrow(() -> new RuntimeException("Dados bancários não encontrado"));
 
         Banco banco = bancoRepository.findById(dadosBancariosCreateDTO.getBancoId())
