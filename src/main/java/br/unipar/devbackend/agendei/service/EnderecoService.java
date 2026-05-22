@@ -27,7 +27,7 @@ public class EnderecoService {
         endereco.setNumero(enderecoCreateDTO.getNumero());
         endereco.setUsuarioId(enderecoCreateDTO.getUsuarioId());
 
-        endereco = enderecoRepository.save(endereco);
+        enderecoRepository.save(endereco);
 
         return new EnderecoResponseDTO(
                 endereco.getId(),
