@@ -301,7 +301,7 @@ public class AgendamentoService {
         agendamento.setStatusAgendamento(StatusAgendamento.valueOf(status));
         agendamento.setDataConfirmacao(LocalDate.from(LocalDateTime.now()));
 
-        if(StatusAgendamento.valueOf(status) == StatusAgendamento.CANCELADO ){
+        if(StatusAgendamento.valueOf(status) == StatusAgendamento.REAGENDADO ){
             agendamento.setDataCancelamento(LocalDateTime.from(LocalDateTime.now()));
             liberarHorario(agendamento);
         }
