@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface DadosBancariosRepository extends JpaRepository<DadosBancarios, Long> {
 
-    Optional<DadosBancarios> findByPrestadorId(Long id);
 
 }

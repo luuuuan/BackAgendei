@@ -113,6 +113,12 @@ public class ServicoService {
     }
 
     public List<ServicoResponseDTO> listarServicos(Long prestadorId){
+        List<Servico> servicos;
+
+        if (prestadorId == null){
+            servicoRepository.findAll();
+
+        }
 
         List<Servico> porPrestador = servicoRepository.findByPrestadorId(prestadorId);
 
@@ -121,30 +127,13 @@ public class ServicoService {
 
         List<Servico> porProfissional = servicoRepository.findByProfissionalIdIn(profissionaisIds);
 
-        List<Servico> servicos = new ArrayList<>();
 
+        servicos = new ArrayList<>();
         servicos.addAll(porPrestador);
         servicos.addAll(porProfissional);
 
         return servicos.stream()
-                .map(s -> new ServicoResponseDTO(
-                        s.getId(),
-                        s.getDuracaoMinutos(),
-                        s.getTempoBuffer(),
-                        s.getStatusServico(),
-                        s.getStatusExecucaoServico(),
-                        s.getProfissional() != null ? s.getProfissional().getId() : null,
-                        s.getProfissional() != null ? s.getProfissional().getNome() : null,
-                        s.getNome(),
-                        s.getDescricao(),
-                        s.getTipoCobranca(),
-                        s.getLocalAtendimento(),
-                        s.getValorServico(),
-                        s.getPrestador() != null ? s.getPrestador().getId() : null,
-                        s.getPrestador() != null && s.getPrestador().getUsuario() != null
-                                ? s.getPrestador().getUsuario().getNome()
-                                : null
-                        ))
+                .map(this::mapperDTO)
                 .toList();
     }
 

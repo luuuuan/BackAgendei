@@ -60,13 +60,9 @@ public class DadosBancariosService {
     }
 
     public DadosBancariosResponseDTO atualizaConta(DadosBancariosCreateDTO dadosBancariosCreateDTO, Long id) {
-        boolean dadoBancario = dadosBancariosRepository.existsById(id);
 
-        if (!dadoBancario) {
-            throw new RuntimeException("Dados bancários não encontrado");
-        }
 
-        DadosBancarios dadosBancarios = dadosBancariosRepository.findByPrestadorId(id)
+        DadosBancarios dadosBancarios = dadosBancariosRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dados bancários não encontrado"));
 
         Banco banco = bancoRepository.findById(dadosBancariosCreateDTO.getBancoId())
