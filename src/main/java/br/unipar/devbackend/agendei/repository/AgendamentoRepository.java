@@ -20,4 +20,6 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     List<Agendamento> findByPrestadorIdAndDataAgendamento(Long prestadorId, LocalDate data);
 
     Boolean existsByUsuarioIdAndPrestadorId(Long usuarioId, Long prestadorId);
+	
+	List<Agendamento> findByDataAgendamentoBetweenAndNotificacaoEnviadaFalse(LocalDateTime inicio, LocalDateTime fim);
 }

@@ -157,8 +157,9 @@ public class PagamentoService {
             document.add(new Paragraph("Valor: R$" + pagamento.getValor()));
             document.add(new Paragraph("Forma de pagamento: " + pagamento.getFormaPgto()));
             document.add(new Paragraph("Dados da transação: " + pagamento.getIdTransacaoStripe()));
-            document.add(new Paragraph("Serviço contratado:" + servico..stream().map));
-            document.add(new Paragraph("Descrição serviço: " + servico.getDescricao()));
+            document.add(new Paragraph("Serviço contratado:" + servico.stream()
+                    .map(Servico::getId)
+                    .toList()));
 
             document.close();
             return baos.toByteArray();
