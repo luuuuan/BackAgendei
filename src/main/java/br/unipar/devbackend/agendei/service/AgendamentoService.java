@@ -2,6 +2,7 @@ package br.unipar.devbackend.agendei.service;
 
 import br.unipar.devbackend.agendei.DTO.create.AgendamentoCreateDTO;
 import br.unipar.devbackend.agendei.DTO.create.AgendamentoPesquisaDTO;
+import br.unipar.devbackend.agendei.DTO.create.PagamentoConfirmaCreateDTO;
 import br.unipar.devbackend.agendei.DTO.response.AgendamentoPesquisaResponseDTO;
 import br.unipar.devbackend.agendei.DTO.response.AgendamentoResponseDTO;
 import br.unipar.devbackend.agendei.entity.*;
@@ -9,6 +10,7 @@ import br.unipar.devbackend.agendei.enums.StatusAgendamento;
 import br.unipar.devbackend.agendei.enums.StatusHorario;
 import br.unipar.devbackend.agendei.enums.TipoCobranca;
 import br.unipar.devbackend.agendei.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +53,9 @@ public class AgendamentoService {
     @Autowired
     private PrestadorRepository prestadorRepository;
 
+    @Autowired
+    private PagamentoService pagamentoService;
+
     public AgendamentoResponseDTO mapperDTO(Agendamento agendamento){
 
         return new  AgendamentoResponseDTO(
@@ -75,7 +80,7 @@ public class AgendamentoService {
 
     }
 
-
+    @Transactional
     public AgendamentoResponseDTO criarAgendamento(AgendamentoCreateDTO agendamentoCreateDTO) {
         Usuario usuario = agendamentoCreateDTO.getUsuarioId() != null ?
                 usuarioRepository
@@ -150,6 +155,16 @@ public class AgendamentoService {
                 agendamentoCreateDTO.getProfissionalId(),
                 agendamentoCreateDTO.getDataAgendamento(),
                 agendamentoCreateDTO.getHoraInicio());
+
+        if (agendamentoCreateDTO.getPaymentIntentId() != null) {
+            PagamentoConfirmaCreateDTO pgto = new PagamentoConfirmaCreateDTO();
+            pgto.setAgendamentoId(agendamento.getId());
+            pgto.setPaymentIntentId(agendamentoCreateDTO.getPaymentIntentId());
+            pgto.setValor(valorTotalAgendamento);
+            pgto.setFormaPgto(agendamentoCreateDTO.getFormaPgto());
+            pagamentoService.confirmarPagamento(pgto);
+            agendamentoRepository.save(agendamento);
+        }
 
         return mapperDTO(agendamento);
     }

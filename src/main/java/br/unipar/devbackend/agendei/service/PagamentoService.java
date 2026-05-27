@@ -71,7 +71,7 @@ public class PagamentoService {
         Pagamento pagamento = new Pagamento();
 
         pagamento.setValor(pagamentoConfirmaCreateDTO.getValor());
-        pagamento.setStatusPagamento(StatusPagamento.APROVADO);
+        pagamento.setStatusPagamento(StatusPagamento.PAGO);
         pagamento.setFormaPgto(pagamentoConfirmaCreateDTO.getFormaPgto());
         pagamento.setIdTransacaoStripe(pagamentoConfirmaCreateDTO.getPaymentIntentId());
         pagamento.setDataPgto(LocalDateTime.now());

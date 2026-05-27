@@ -1,6 +1,7 @@
 package br.unipar.devbackend.agendei.DTO.create;
 
 
+import br.unipar.devbackend.agendei.enums.FormaPgto;
 import br.unipar.devbackend.agendei.enums.StatusAgendamento;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -55,4 +56,8 @@ public class AgendamentoCreateDTO {
 	private Long prestadorId;
 
     private Double quantidade;
+
+    private String paymentIntentId;
+
+    private FormaPgto formaPgto;
 }

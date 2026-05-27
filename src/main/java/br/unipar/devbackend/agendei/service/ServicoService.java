@@ -116,8 +116,11 @@ public class ServicoService {
         List<Servico> servicos;
 
         if (prestadorId == null){
-            servicoRepository.findAll();
+            servicos = servicoRepository.findAll();
 
+            return servicos.stream()
+                    .map(this::mapperDTO)
+                    .toList();
         }
 
         List<Servico> porPrestador = servicoRepository.findByPrestadorId(prestadorId);
