@@ -6,6 +6,7 @@ import br.unipar.devbackend.agendei.DTO.response.PagamentoIntentResponseDTO;
 import br.unipar.devbackend.agendei.DTO.response.PagamentoResponseDTO;
 import br.unipar.devbackend.agendei.entity.Agendamento;
 import br.unipar.devbackend.agendei.entity.Pagamento;
+import br.unipar.devbackend.agendei.entity.Servico;
 import br.unipar.devbackend.agendei.enums.StatusPagamento;
 import br.unipar.devbackend.agendei.repository.AgendamentoRepository;
 import br.unipar.devbackend.agendei.repository.PagamentoRepository;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PagamentoService {
@@ -136,6 +138,8 @@ public class PagamentoService {
 
         Agendamento agendamento = pagamento.getAgendamento();
 
+        List<Servico> servico = agendamento.getServicos();
+
         try{
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -145,11 +149,16 @@ public class PagamentoService {
 
             document.add(new Paragraph("Comprovante de pagamento"));
             document.add(new Paragraph("Dados do agendamento"));
-            document.add(new Paragraph("Data de pagamento: " + pagamento.getDataPgto()));
+			document.add(new Paragraph("Dia do agendamento: " + agendamento.getDataAgendamento()));
+			document.add(new Paragraph("Hora do agendamento: " + agendamento.getHoraInicio()));
+            document.add(new Paragraph("Data de pagamento: " + pagamento.getDataPgto().getDayOfMonth() + "/" +
+                    pagamento.getDataPgto().getMonth() + "/" +
+                    pagamento.getDataPgto().getYear()));
             document.add(new Paragraph("Valor: R$" + pagamento.getValor()));
             document.add(new Paragraph("Forma de pagamento: " + pagamento.getFormaPgto()));
             document.add(new Paragraph("Dados da transação: " + pagamento.getIdTransacaoStripe()));
-            document.add(new Paragraph("Serviço contratado:" + agendamento.getServicos()));
+            document.add(new Paragraph("Serviço contratado:" + servico..stream().map));
+            document.add(new Paragraph("Descrição serviço: " + servico.getDescricao()));
 
             document.close();
             return baos.toByteArray();

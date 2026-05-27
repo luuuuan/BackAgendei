@@ -143,6 +143,7 @@ public class ServicoService {
     public ServicoResponseDTO atualizarServico(Long id, ServicoCreateDTO servicoCreateDTO){
         Servico servico = servicoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Servicço não encontrado"));
+
         if(servicoCreateDTO.getNome() != null) servico.setNome(servicoCreateDTO.getNome());
         if(servicoCreateDTO.getDescricao() != null) servico.setDescricao(servicoCreateDTO.getDescricao());
         if(servicoCreateDTO.getValorServico() != null) servico.setValorServico(servicoCreateDTO.getValorServico());
