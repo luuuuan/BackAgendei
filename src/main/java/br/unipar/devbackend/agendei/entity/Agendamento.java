@@ -58,8 +58,6 @@ public class Agendamento {
     @JoinColumn(name ="profissional_id")
     private Profissional profissional;
 
-    
-
     @ManyToMany
     @JoinTable(
             name = "agendamento_servico",
@@ -75,4 +73,6 @@ public class Agendamento {
 
     @ManyToOne
 	private Prestador prestador;
+
+    private Boolean notificacaoEnviada;
 }

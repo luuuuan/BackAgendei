@@ -85,9 +85,29 @@ public class FolgaService {
     }
 
 
-    public List<FolgaResponseDTO> buscaFolga(Long profissionalId){
+    public List<FolgaResponseDTO> buscaFolgaProfissional(Long profissionalId){
 
         List<Folga> folga = folgaRepository.findByProfissionalId(profissionalId);
+
+        return folga.stream()
+                .filter(Folga::getAtivo)
+                .map( f -> new FolgaResponseDTO(
+                        f.getId(),
+                        f.getData(),
+                        f.getProfissional() != null ? f.getProfissional().getId() : null,
+                        f.getPrestador() != null ? f.getPrestador().getId() : null,
+                        f.getDiaInteiro(),
+                        f.getHoraInicio(),
+                        f.getHoraFim(),
+                        f.getMotivo()
+                )).toList();
+
+
+    }
+
+    public List<FolgaResponseDTO> buscaFolgaPrestador(Long prestadorId){
+
+        List<Folga> folga = folgaRepository.findByPrestadorId(prestadorId);
 
         return folga.stream()
                 .filter(Folga::getAtivo)

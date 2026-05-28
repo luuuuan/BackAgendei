@@ -103,7 +103,7 @@ public class HorarioDisponivelService {
                         h.getStatusHorario(),
                         h.getProfissional().getId(),
                         h.getServico().getId()
-                        //
+
 
                 )).toList();
     }

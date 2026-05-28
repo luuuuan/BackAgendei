@@ -248,13 +248,12 @@ public class AgendamentoService {
 
         Integer duracao = servico.getDuracaoMinutos();
 
-        Boolean folgaProfissional = profissionalId != null ?
+        Boolean folga = profissionalId != null ?
                 folgaRepository.existsByProfissionalIdAndData(profissionalId, data) :
                 folgaRepository.existsByPrestadorIdAndData(prestadorId, data);
 
-        if(folgaProfissional == true){
-            return new ArrayList<>();
-        }
+        if(folga == true) return new ArrayList<>();
+
         //===============================
 
         List<String> horarioDisponivel = new ArrayList<>();
@@ -276,7 +275,7 @@ public class AgendamentoService {
 
             LocalTime tempo = LocalTime.of(horasConvertido, minutosConvertido);
 
-            if(tempo.isBefore(horaAtual) && data.isEqual(diaAtual)){
+            if(tempo.isBefore(horaAtual.plusHours(2)) && data.isEqual(diaAtual)){
                 continue;
             }
 

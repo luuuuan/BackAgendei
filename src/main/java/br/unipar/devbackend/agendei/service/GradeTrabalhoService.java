@@ -106,6 +106,29 @@ public class GradeTrabalhoService {
 
 
     }
+
+    public List<GradeTrabalhoResponseDTO> gradeTrabalhoPresatador(Long prestadorId){
+        List<GradeTrabalho> gradeTrabalhoLista = gradeTrabalhoRepository.findByPrestadorId(prestadorId);
+
+
+
+        return gradeTrabalhoLista.stream()
+                .filter(f -> f.getAtivo() == true)
+                .map( gradeTrabalho ->  new GradeTrabalhoResponseDTO(
+                        gradeTrabalho.getId(),
+                        gradeTrabalho.getProfissional() != null ? gradeTrabalho.getProfissional().getId() : null,
+                        gradeTrabalho.getDiaInicio(),
+                        gradeTrabalho.getDiaFim(),
+                        gradeTrabalho.getHoraInicio(),
+                        gradeTrabalho.getHoraFim(),
+                        gradeTrabalho.getInicioIntervalo(),
+                        gradeTrabalho.getFimIntervalo(),
+                        gradeTrabalho.getPrestador() != null ? gradeTrabalho.getPrestador().getId() : null
+                ))
+                .toList();
+
+
+    }
 	
 	public GradeTrabalhoResponseDTO atualizarGrade(Long id, GradeTrabalhoCreateDTO gradeTrabalhoCreateDTO){
 		GradeTrabalho gradeTrabalho = gradeTrabalhoRepository.findByIdAndProfissionalId(id, gradeTrabalhoCreateDTO.getProfissionalId())

@@ -38,7 +38,19 @@ public class GradeTrabalhoController {
         return ResponseEntity.ok(gradeTrabalhoResponseDTO);
 
    }
-   
+
+   @GetMapping("/prestador/{prestadorId}")
+   public ResponseEntity<List<GradeTrabalhoResponseDTO>> prestadorTrabalhoGrade(
+           @PathVariable Long prestadorId
+   ){
+       List<GradeTrabalhoResponseDTO> gradeTrabalhoResponseDTO =
+               gradeTrabalhoService.gradeTrabalhoPresatador(prestadorId);
+
+       return ResponseEntity.ok(gradeTrabalhoResponseDTO);
+
+   }
+
+
    @PutMapping("/atualizar/{id}")
    public ResponseEntity<GradeTrabalhoResponseDTO> atualizar(
 			@PathVariable Long id,

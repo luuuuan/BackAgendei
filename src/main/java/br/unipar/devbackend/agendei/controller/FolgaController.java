@@ -33,10 +33,19 @@ public class FolgaController {
     @GetMapping("/profissional/{profissionalId}")
     public ResponseEntity<List<FolgaResponseDTO>> folgaProfissional(
             @PathVariable Long profissionalId){
-        List<FolgaResponseDTO> listaFolga = folgaService.buscaFolga(profissionalId);
+        List<FolgaResponseDTO> listaFolgaProfissional = folgaService.buscaFolgaProfissional(profissionalId);
+
+        return ResponseEntity.ok(listaFolgaProfissional);
+    }
+
+    @GetMapping("prestador/{prestadorId}")
+    public ResponseEntity<List<FolgaResponseDTO>> folgaPrestador(
+            @PathVariable Long prestadorId){
+        List<FolgaResponseDTO> listaFolga = folgaService.buscaFolgaPrestador(prestadorId);
 
         return ResponseEntity.ok(listaFolga);
     }
+
 
     @PatchMapping("/desativar/{id}")
     public ResponseEntity<?> excluirFolga(
