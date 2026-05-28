@@ -1,6 +1,7 @@
 package br.unipar.devbackend.agendei.repository;
 
 import br.unipar.devbackend.agendei.entity.Agendamento;
+import br.unipar.devbackend.agendei.enums.StatusAgendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,4 +24,6 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     Boolean existsByUsuarioIdAndPrestadorId(Long usuarioId, Long prestadorId);
 	
 	List<Agendamento> findByDataAgendamentoBetweenAndNotificacaoEnviadaFalse(LocalDateTime inicio, LocalDateTime fim);
+
+    List<Agendamento> findByStatusAgendamento(StatusAgendamento statusAgendamento);
 }
