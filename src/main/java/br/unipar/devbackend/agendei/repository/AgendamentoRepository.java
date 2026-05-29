@@ -23,7 +23,7 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
 
     Boolean existsByUsuarioIdAndPrestadorId(Long usuarioId, Long prestadorId);
 	
-	List<Agendamento> findByDataAgendamentoBetweenAndNotificacaoEnviadaFalse(LocalDateTime inicio, LocalDateTime fim);
+	List<Agendamento> findByDataAgendamentoAndNotificacaoEnviadaFalse(LocalDate agora);
 
     List<Agendamento> findByStatusAgendamento(StatusAgendamento statusAgendamento);
 }

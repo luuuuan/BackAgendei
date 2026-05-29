@@ -133,11 +133,28 @@ public class GradeTrabalhoService {
 	public GradeTrabalhoResponseDTO atualizarGrade(Long id, GradeTrabalhoCreateDTO gradeTrabalhoCreateDTO){
 		GradeTrabalho gradeTrabalho = gradeTrabalhoRepository.findByIdAndProfissionalId(id, gradeTrabalhoCreateDTO.getProfissionalId())
 			.orElseThrow(()-> new RuntimeException("Grade de trabalho não encontrada"));
-	
+
+        DayOfWeek inicio;
+        DayOfWeek fim;
+
+        if(gradeTrabalhoCreateDTO.getDiasSemana().equals("SEG_SEX")){
+            inicio = DayOfWeek.MONDAY;
+            fim = DayOfWeek.FRIDAY;
+        } else if (gradeTrabalhoCreateDTO.getDiasSemana().equals("SEG_SAB")) {
+            inicio = DayOfWeek.MONDAY;
+            fim = DayOfWeek.SATURDAY;
+        }else if(gradeTrabalhoCreateDTO.getDiasSemana().equals("TER_SAB")){
+            inicio = DayOfWeek.TUESDAY;
+            fim = DayOfWeek.SUNDAY;
+        }else{
+            inicio = DayOfWeek.MONDAY;
+            fim = DayOfWeek.SUNDAY;
+        }
+
         gradeTrabalho.setHoraInicio(gradeTrabalhoCreateDTO.getHoraInicio());
         gradeTrabalho.setHoraFim(gradeTrabalhoCreateDTO.getHoraFim());
-        gradeTrabalho.setDiaInicio(gradeTrabalhoCreateDTO.getDiaInicio());
-        gradeTrabalho.setDiaFim(gradeTrabalhoCreateDTO.getDiaFim());
+        gradeTrabalho.setDiaInicio(inicio);
+        gradeTrabalho.setDiaFim(fim);
         gradeTrabalho.setInicioIntervalo(gradeTrabalhoCreateDTO.getInicioIntervalo());
         gradeTrabalho.setFimIntervalo(gradeTrabalhoCreateDTO.getFimIntervalo());
         gradeTrabalho.setAtivo(gradeTrabalhoCreateDTO.getAtivo());

@@ -124,6 +124,11 @@ public class AgendamentoService {
                 ? agendamentoCreateDTO.getQuantidade()
                 : 1.0;
 
+        /*
+        COMENTADO POIS SERA USADO
+        VALOR DO SERVIÇO DE FORMA INDIVIDUAL POR HORA,
+        POIS NAO SERA POSSIVEL AGENDAR MAIS DE UM SERVIÇO
+
         BigDecimal valorTotalAgendamento = servicos.stream().map(s -> {
             if (s.getTipoCobranca() == TipoCobranca.FIXO) {
                 return s.getValorServico();
@@ -131,7 +136,7 @@ public class AgendamentoService {
                 return s.getValorServico().multiply(BigDecimal.valueOf(quantidade));
             }
         }).reduce(BigDecimal.ZERO, BigDecimal::add);
-
+*/
         Agendamento agendamento = new Agendamento();
 
         agendamento.setDataAgendamento(agendamentoCreateDTO.getDataAgendamento());
@@ -141,7 +146,7 @@ public class AgendamentoService {
         agendamento.setDataConfirmacao(agendamentoCreateDTO.getDataConfirmacao());
         agendamento.setStatusAgendamento(StatusAgendamento.PENDENTE);
         agendamento.setTaxaPlataforma(agendamentoCreateDTO.getTaxaPlataforma());
-        agendamento.setValorTotal(valorTotalAgendamento);
+        agendamento.setValorTotal(agendamentoCreateDTO.getValorTotal());
         agendamento.setObservacoes(agendamentoCreateDTO.getObservacoes());
         agendamento.setUsuario(usuario);
         agendamento.setProfissional(profissional);
@@ -160,7 +165,7 @@ public class AgendamentoService {
             PagamentoConfirmaCreateDTO pgto = new PagamentoConfirmaCreateDTO();
             pgto.setAgendamentoId(agendamento.getId());
             pgto.setPaymentIntentId(agendamentoCreateDTO.getPaymentIntentId());
-            pgto.setValor(valorTotalAgendamento);
+            pgto.setValor(agendamentoCreateDTO.getValorTotal());
             pgto.setFormaPgto(agendamentoCreateDTO.getFormaPgto());
             pagamentoService.confirmarPagamento(pgto);
             agendamentoRepository.save(agendamento);
@@ -182,6 +187,7 @@ public class AgendamentoService {
                 .findFirst();
         horarioDisponivelOptional.ifPresent(h -> {
             h.setStatusHorario(StatusHorario.INDISPONIVEL);
+            
             horarioDisponivelRepository.save(h);
         });
 

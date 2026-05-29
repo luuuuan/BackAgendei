@@ -99,9 +99,7 @@ public class PagamentoService {
                 .orElseThrow(() -> new RuntimeException("Dados do pagamento não encontrado"));
 
 
-        Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
-
+        
 
         try{
 

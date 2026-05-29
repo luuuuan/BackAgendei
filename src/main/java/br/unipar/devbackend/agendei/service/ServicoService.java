@@ -149,6 +149,7 @@ public class ServicoService {
         if(servicoCreateDTO.getValorServico() != null) servico.setValorServico(servicoCreateDTO.getValorServico());
         if(servicoCreateDTO.getDuracaoMinutos() != null) servico.setDuracaoMinutos(servicoCreateDTO.getDuracaoMinutos());
         if(servicoCreateDTO.getTempoBuffer() != null) servico.setTempoBuffer(servicoCreateDTO.getTempoBuffer());
+        if(servicoCreateDTO.getTipoCobranca() != null) servico.setTipoCobranca(servicoCreateDTO.getTipoCobranca());
         if(servicoCreateDTO.getStatusServico() != null) servico.setStatusServico(servicoCreateDTO.getStatusServico());
         if(servicoCreateDTO.getProfissionalId() != null) {
             Profissional profissional = profissionalRepository.findById(servicoCreateDTO.getProfissionalId())

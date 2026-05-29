@@ -15,6 +15,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Refund;
 import com.stripe.param.RefundCreateParams;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,11 +30,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class AgendamentoScheduler {
+    @Autowired
+    private final AgendamentoRepository agendamentoRepository;
 
-    private AgendamentoRepository agendamentoRepository;
-    private PagamentoRepository pagamentoRepository;
-    private EmailService emailService;
-    private WhatsAppService whatsAppService;
+    @Autowired
+    private final PagamentoRepository pagamentoRepository;
+
+    @Autowired
+    private final EmailService emailService;
+
+    @Autowired
+    private final WhatsAppService whatsAppService;
 
     @Value("${app.notificacao.antecedencia-minutos:60}")
     private int antecedenciaMinutos;
@@ -43,20 +50,20 @@ public class AgendamentoScheduler {
 
     @Scheduled(fixedRate = 5 * 60 * 1000)
     public void notificarAgendamentos(){
-        LocalDateTime agora = LocalDateTime.now();
+        LocalDate agora = LocalDate.now();
 
-        LocalDateTime inicio = agora.plusMinutes(antecedenciaMinutos - 2);
-        LocalDateTime fim = agora.plusMinutes(antecedenciaMinutos + 2);
+       // LocalDateTime inicio = agora.plusMinutes(antecedenciaMinutos - 2);
+        //LocalDateTime fim = agora.plusMinutes(antecedenciaMinutos + 2);
 
         List<Agendamento> agendamentos = agendamentoRepository
-                .findByDataAgendamentoBetweenAndNotificacaoEnviadaFalse(inicio, fim);
+                .findByDataAgendamentoAndNotificacaoEnviadaFalse(agora);
 
         if(agendamentos.isEmpty()) return;
 
         log.info("{} agendamentos para notificar", agendamentos.size());
 
         for(Agendamento agendamento : agendamentos){
-                emailService.montarMensagem(agendamento);
+                emailService.enviarAgendamento(agendamento);
                 whatsAppService.enviarAgendamento(agendamento);
 
                 agendamento.setNotificacaoEnviada(true);
@@ -67,53 +74,62 @@ public class AgendamentoScheduler {
 
     @Scheduled(fixedRate = 60 * 1000)
     public void atualizaStatusAgendamento(){
+
         LocalDate agoraDia = LocalDate.now();
 
         LocalTime agoraHora = LocalTime.now().minusHours(2);
+
 
         StatusAgendamento statusAgendamento = StatusAgendamento.PENDENTE;
 
         List<Agendamento> agendamentos = agendamentoRepository.findByStatusAgendamento(statusAgendamento);
 
+        if (!agendamentos.isEmpty()){
 
-        if (agendamentos.isEmpty()) return;
+            for(Agendamento agendamento : agendamentos){
 
-        for(Agendamento agendamento : agendamentos){
-            if (agoraDia.isEqual(agendamento.getDataAgendamento()) &&
-                    agoraHora.isAfter(agendamento.getHoraFim())) {
+                if (agoraDia.isEqual(agendamento.getDataAgendamento()) &&
+                        agoraHora.isAfter(agendamento.getHoraInicio())) {
+                    Pagamento pagamento = pagamentoRepository.findByAgendamentoId(agendamento.getId())
+                            .orElse(null);
 
-                Pagamento pagamento = pagamentoRepository.findByAgendamentoId(agendamento.getId())
-                        .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+                    if(pagamento != null){
+                        try{
 
-                try{
-
-                    StripeClient client = new StripeClient(stripeSecretKey);
-                    RefundCreateParams params =
-                            RefundCreateParams.builder().setPaymentIntent(pagamento.getIdTransacaoStripe()).build();
-
-
-                    Refund refund = client.refunds().create(params);
-
-                    pagamento.setStatusPagamento(StatusPagamento.REEMBOLSADO);
-                    pagamento.setIdReembolsoStripe(refund.getId());
-                    pagamento.setDataReembolso(LocalDateTime.now());
-                    pagamentoRepository.save(pagamento);
+                            StripeClient client = new StripeClient(stripeSecretKey);
+                            RefundCreateParams params =
+                                    RefundCreateParams.builder().setPaymentIntent(pagamento.getIdTransacaoStripe()).build();
 
 
-                }catch(StripeException e){
-                    log.error("{}Erro ao realizar operação: ", e.getMessage());
+                            Refund refund = client.refunds().create(params);
+
+                            pagamento.setStatusPagamento(StatusPagamento.REEMBOLSADO);
+                            pagamento.setIdReembolsoStripe(refund.getId());
+                            pagamento.setDataReembolso(LocalDateTime.now());
+                            pagamentoRepository.save(pagamento);
+
+
+                        }catch(StripeException e){
+                            log.error("Erro ao realizar operação: {}", e.getMessage());
+                        }
+                    }
+
+                    agendamento.setStatusAgendamento(StatusAgendamento.CANCELADO);
+                    agendamento.setMotivoCancelamento("Prestador não confirmou agendamento");
+
+                    agendamentoRepository.save(agendamento);
+                    log.info("{}{}{}agendamento cancelado ", agendamento.getId(), " com ",
+                            agendamento.getProfissional().getUsuario().getNome());
                 }
 
-                agendamento.setStatusAgendamento(StatusAgendamento.CANCELADO);
-                agendamento.setMotivoCancelamento("Prestador não confirmou agendamento");
-
-                agendamentoRepository.save(agendamento);
-
-                log.info("{}{}{}agendamento cancelado ", agendamento.getId(), " com ",
-                        agendamento.getProfissional().getUsuario().getNome());
             }
 
+        }else {
+            System.out.println("nenhum agendamento encontrado");
+            log.info("nenhum agendamento encontrado");
         }
+
+
 
     }
 

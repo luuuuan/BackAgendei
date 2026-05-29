@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
@@ -27,7 +28,8 @@ public class EmailService {
     private String remetente;
     private String nome;
 
-    private void enviarAgendamento(Agendamento agendamento){
+
+    public void enviarAgendamento(Agendamento agendamento){
         nome = agendamento.getProfissional() != null ? agendamento.getProfissional().getNome()
                 : agendamento.getPrestador().getUsuario().getNome();
         try{
