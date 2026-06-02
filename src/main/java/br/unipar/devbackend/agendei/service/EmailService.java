@@ -24,22 +24,29 @@ public class EmailService {
     @Value("${app.url}")
     private String appUrl;
 
-    @Value("$spring.mail.username")
+    @Value("${spring.mail.username}")
     private String remetente;
+
     private String nome;
 
 
     public void enviarAgendamento(Agendamento agendamento){
         nome = agendamento.getProfissional() != null ? agendamento.getProfissional().getNome()
                 : agendamento.getPrestador().getUsuario().getNome();
+
         try{
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(remetente);
+            //message.setFrom(remetente);
+            message.setFrom("luanzxcvbnm558@gmail.com");
+
             message.setTo(agendamento.getUsuario().getEmail());
             message.setSubject("Lembrete de agendamento com " + nome);
             message.setText(montarMensagem(agendamento));
 
             mailSender.send(message);
+            log.info("Email enviado para: {}", agendamento.getUsuario().getEmail());
+
+            System.out.println("Email enviado para : " + agendamento.getUsuario().getEmail());
         }catch (Exception e){
             log.error("Erro ao enviar email: {}", e.getMessage());
         }
@@ -47,23 +54,24 @@ public class EmailService {
     }
 
     public String montarMensagem(Agendamento agendamento){
+        System.out.println("Enviando email");
         return String.format("""
                 Olá, %s!
                 
                 Você tem um agendamento em breve:
                 📌 %s
-                🕐 %s às 4%s
+                🕐 %s às %s
                 📝 %s
                 
                 Até logo!
                 
                 Obs: Você pode cancelar o agendamento
-                com até duas horas de antecedência
+                com até duas horas de antecedência!
                 """,
                 agendamento.getUsuario().getNome(),
                 agendamento.getEndereco(),
-                agendamento.getDataAgendamento(),
-                agendamento.getHoraInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                agendamento.getDataAgendamento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                agendamento.getHoraInicio().format(DateTimeFormatter.ofPattern("HH:mm")),
                 agendamento.getServicos()
         );
 

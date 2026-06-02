@@ -153,6 +153,7 @@ public class AgendamentoService {
         agendamento.setServicos(servicos);
         agendamento.setEndereco(endereco);
         agendamento.setPrestador(prestador);
+        agendamento.setNotificacaoEnviada(false);
 
         agendamentoRepository.save(agendamento);
 

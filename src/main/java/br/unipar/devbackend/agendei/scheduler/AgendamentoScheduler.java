@@ -14,6 +14,7 @@ import com.stripe.StripeClient;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Refund;
 import com.stripe.param.RefundCreateParams;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,32 +43,46 @@ public class AgendamentoScheduler {
     @Autowired
     private final WhatsAppService whatsAppService;
 
-    @Value("${app.notificacao.antecedencia-minutos:60}")
+    @Value("${app.notificacao.antecedencia-minutos:120}")
     private int antecedenciaMinutos;
 
     @Value("${stripe.secret-key}")
     private String stripeSecretKey;
 
-    @Scheduled(fixedRate = 5 * 60 * 1000)
+    @Transactional
+    @Scheduled(fixedRate = 60 * 1000)
     public void notificarAgendamentos(){
-        LocalDate agora = LocalDate.now();
 
-       // LocalDateTime inicio = agora.plusMinutes(antecedenciaMinutos - 2);
-        //LocalDateTime fim = agora.plusMinutes(antecedenciaMinutos + 2);
+        System.out.println("inicio do envio de notificacoes");
+        LocalDate hoje = LocalDate.now();
+
+        LocalTime agoraHora =  LocalTime.now();
+
+        LocalTime inicio = agoraHora.plusMinutes(antecedenciaMinutos - 2);
+
+        LocalTime fim = agoraHora.plusMinutes(antecedenciaMinutos + 2);
+
+        System.out.println("inicio: " + inicio + " fim " + fim);
+
+        StatusAgendamento statusAgendamento = StatusAgendamento.CONFIRMADO;
 
         List<Agendamento> agendamentos = agendamentoRepository
-                .findByDataAgendamentoAndNotificacaoEnviadaFalse(agora);
+                .findByDataAgendamentoAndHoraInicioBetweenAndStatusAgendamentoAndNotificacaoEnviadaFalse(hoje, inicio, fim, statusAgendamento);
 
+
+        System.out.println("Total de agendamentos: " + agendamentos.size());
         if(agendamentos.isEmpty()) return;
 
         log.info("{} agendamentos para notificar", agendamentos.size());
 
         for(Agendamento agendamento : agendamentos){
+            System.out.println("Entrou no loop");
                 emailService.enviarAgendamento(agendamento);
                 whatsAppService.enviarAgendamento(agendamento);
 
                 agendamento.setNotificacaoEnviada(true);
-                agendamentoRepository.save(agendamento);
+                //agendamentoRepository.save(agendamento);
+
         }
 
     }
@@ -118,7 +133,7 @@ public class AgendamentoScheduler {
                     agendamento.setMotivoCancelamento("Prestador não confirmou agendamento");
 
                     agendamentoRepository.save(agendamento);
-                    log.info("{}{}{}agendamento cancelado ", agendamento.getId(), " com ",
+                    log.info("{}agendamento cancelado com ",
                             agendamento.getProfissional().getUsuario().getNome());
                 }
 

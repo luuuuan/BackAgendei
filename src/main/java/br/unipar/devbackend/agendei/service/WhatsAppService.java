@@ -38,7 +38,7 @@ public class WhatsAppService {
                     new PhoneNumber(from),
                     montarMensagem(agendamento)
             ).create();
-
+        log.info("Agendamento enviado com sucesso para {}", agendamento.getUsuario().getTelefone());
         }catch (Exception e){
             log.error("Erro ao enviar mensagem para: {}", e.getMessage());
         }
@@ -61,8 +61,8 @@ public class WhatsAppService {
                 """,
                 agendamento.getUsuario().getNome(),
                 agendamento.getEndereco(),
-                agendamento.getDataAgendamento(),
-                agendamento.getHoraInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                agendamento.getDataAgendamento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                agendamento.getHoraInicio().format(DateTimeFormatter.ofPattern("HH:mm")),
                 agendamento.getServicos());
     }
 

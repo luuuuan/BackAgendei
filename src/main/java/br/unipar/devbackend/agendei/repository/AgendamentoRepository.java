@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -23,7 +24,7 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
 
     Boolean existsByUsuarioIdAndPrestadorId(Long usuarioId, Long prestadorId);
 	
-	List<Agendamento> findByDataAgendamentoAndNotificacaoEnviadaFalse(LocalDate agora);
+	List<Agendamento> findByDataAgendamentoAndHoraInicioBetweenAndStatusAgendamentoAndNotificacaoEnviadaFalse(LocalDate agora, LocalTime inicio, LocalTime fim, StatusAgendamento statusAgendamento);
 
     List<Agendamento> findByStatusAgendamento(StatusAgendamento statusAgendamento);
 }
