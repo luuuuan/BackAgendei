@@ -6,6 +6,7 @@ import br.unipar.devbackend.agendei.DTO.create.UsuarioLoginDTO;
 import br.unipar.devbackend.agendei.DTO.response.*;
 import br.unipar.devbackend.agendei.config.ConfiguracaoSeguranca;
 import br.unipar.devbackend.agendei.entity.*;
+import br.unipar.devbackend.agendei.enums.StatusAgendamento;
 import br.unipar.devbackend.agendei.enums.StatusProfissional;
 import br.unipar.devbackend.agendei.enums.UserTipo;
 import br.unipar.devbackend.agendei.repository.*;
@@ -58,9 +59,10 @@ public class UsuarioService {
                 usuario.getCpf(),
                 usuario.getTelefone(),
                 usuario.getDataNascimento(),
-                usuario.getEndereco().getId(),
+                usuario.getEndereco() != null? usuario.getEndereco().getId() : null,
                 usuario.getTipoUsuario(),
-                usuario.getPrestador() != null ? usuario.getPrestador().getId() : null
+                usuario.getPrestador() != null ? usuario.getPrestador().getId() : null,
+                usuario.getAtivo()
         );
 
     }
@@ -76,6 +78,23 @@ public class UsuarioService {
         return mapperDTO(usuario);
     }
 
+    public List<UsuarioResponseDTO> listarUsuarios(){
+        List<Usuario> listarUsuarios = usuarioRepository.findAll();
+
+        return listarUsuarios.stream()
+                .map(u -> new UsuarioResponseDTO(
+                        u.getId() ,
+                        u.getNome(),
+                        u.getEmail(),
+                        u.getCpf(),
+                        u.getTelefone(),
+                        u.getDataNascimento(),
+                        u.getEndereco() != null? u.getEndereco().getId() : null,
+                        u.getTipoUsuario(),
+                        u.getPrestador() != null ? u.getPrestador().getId() : null,
+                        u.getAtivo()
+                )).toList();
+    }
 
 
     public UsuarioResponseDTO criarUsuario(UsuarioCreateDTO usuarioCreateDTO){
@@ -145,18 +164,7 @@ public class UsuarioService {
             usuarioRepository.save(usuario);
         }
 
-        return new UsuarioResponseDTO(
-                usuario.getId(),
-                usuario.getNome(),
-                usuario.getEmail(),
-                usuario.getCpf(),
-                usuario.getTelefone(),
-                usuario.getDataNascimento(),
-                usuario.getEndereco().getId(),
-                usuario.getTipoUsuario(),
-                usuario.getPrestador() != null ? usuario.getPrestador().getId() : null
-
-        );
+        return mapperDTO(usuario);
     }
 
     public List<UsuarioResponseDTO> listar(Long prestadorId){
@@ -172,12 +180,9 @@ public class UsuarioService {
                                 u.getDataNascimento(),
                                 u.getEndereco().getId(),
                                 u.getTipoUsuario(),
-                                u.getPrestador() != null ? u.getPrestador().getId() : null
+                                u.getPrestador() != null ? u.getPrestador().getId() : null,
+                                u.getAtivo()
                                 )).toList();
-
-
-
-
     }
 
 
@@ -186,12 +191,6 @@ public class UsuarioService {
                 .findByEmail(usuarioLoginDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("E-mail ou senha incorreto!"));
 
-//        Profissional profissional = profissionalRepository.findByPrestador_Id()
-//
-//        if(usuario.getTipoUsuario() == UserTipo.PROFISSIONAL && usuario.getPrestador() == null){
-//            throw new RuntimeException("Profissional não possui prestador vinculado");
-//
-//        }
 
         if (usuario.getAtivo() == null || !usuario.getAtivo()){
             throw new RuntimeException("Usuario não verificado!");
@@ -339,6 +338,30 @@ public class UsuarioService {
 
         usuario.setSenha(passwordEncoder.encode(novaSenha));
 
+        usuarioRepository.save(usuario);
+    }
+
+    public void atualizaCadastro( Long id, Boolean ativo){
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        StatusAgendamento statusAgendamento = StatusAgendamento.CONFIRMADO;
+
+        Boolean agendamentos = agendamentoRepository.existsByUsuarioIdAndStatusAgendamento(id, statusAgendamento);
+
+
+        if(!ativo && agendamentos){
+            List<Agendamento> listAgendamento = agendamentoRepository.findByUsuarioIdAndStatusAgendamento(id, statusAgendamento);
+
+            for(Agendamento agendamento : listAgendamento){
+                agendamento.setStatusAgendamento(StatusAgendamento.CANCELADO);
+                agendamento.setMotivoCancelamento("Usuário inativado");
+
+                agendamentoRepository.save(agendamento);
+            }
+
+        }
+        usuario.setAtivo(ativo);
         usuarioRepository.save(usuario);
     }
 

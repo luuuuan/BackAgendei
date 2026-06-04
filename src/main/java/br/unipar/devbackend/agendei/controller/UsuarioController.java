@@ -28,6 +28,14 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.buscarPorId(id));
     }
 
+    @GetMapping("/todos")
+    public ResponseEntity<List<UsuarioResponseDTO>> todos(){
+
+        List<UsuarioResponseDTO> listaUsuarios = usuarioService.listarUsuarios();
+
+        return ResponseEntity.ok(listaUsuarios);
+    }
+
 
     @PatchMapping("/atualizar-cliente/{usuarioId}")
     public ResponseEntity<UsuarioAtualizaResponseDTO> atualizar(
@@ -129,6 +137,16 @@ public class UsuarioController {
 
         usuarioService.atualizarSenha(id, body.get("senhaAtual"), body.get("novaSenha"));
         return ResponseEntity.ok(Map.of("mensagem", "Senha atualizada!"));
+    }
+
+    @PatchMapping("/{id}/ativo")
+    public ResponseEntity<?> atualizaCadastro(
+            @PathVariable Long id,
+            @RequestBody Map<String, Boolean> body){
+
+        usuarioService.atualizaCadastro(id, body.get("ativo"));
+
+        return ResponseEntity.ok(Map.of("mensagem:", "Usuário atualizado com sucesso!"));
     }
 
 

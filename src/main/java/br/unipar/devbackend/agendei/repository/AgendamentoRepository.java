@@ -22,9 +22,11 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
 
     List<Agendamento> findByPrestadorIdAndDataAgendamento(Long prestadorId, LocalDate data);
 
-    Boolean existsByUsuarioIdAndPrestadorId(Long usuarioId, Long prestadorId);
+    Boolean existsByUsuarioIdAndStatusAgendamento(Long usuarioId, StatusAgendamento statusAgendamento);
 	
 	List<Agendamento> findByDataAgendamentoAndHoraInicioBetweenAndStatusAgendamentoAndNotificacaoEnviadaFalse(LocalDate agora, LocalTime inicio, LocalTime fim, StatusAgendamento statusAgendamento);
 
     List<Agendamento> findByStatusAgendamento(StatusAgendamento statusAgendamento);
+
+    List<Agendamento> findByUsuarioIdAndStatusAgendamento(Long id, StatusAgendamento statusAgendamento);
 }

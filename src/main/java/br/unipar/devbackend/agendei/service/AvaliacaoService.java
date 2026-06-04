@@ -13,6 +13,8 @@ import br.unipar.devbackend.agendei.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AvaliacaoService {
 
@@ -36,8 +38,8 @@ public class AvaliacaoService {
         Agendamento agendamento = agendamentoRepository.findById(avaliacaoCreateDTO.getAgendamentoId())
                 .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
 
-        Profissional profissional = profissionalRepository.findById(avaliacaoCreateDTO.getProfissionalId())
-                .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+        //Profissional profissional = profissionalRepository.findById(avaliacaoCreateDTO.getProfissionalId())
+                //.orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
 
         if (avaliacaoRepository.existsByAgendamentoIdAndUsuarioId(avaliacaoCreateDTO.getAgendamentoId(),
                 avaliacaoCreateDTO.getUsuarioId())){
@@ -50,7 +52,7 @@ public class AvaliacaoService {
         avaliacao.setComentario(avaliacaoCreateDTO.getComentario());
         avaliacao.setAgendamento(agendamento);
         avaliacao.setUsuario(usuario);
-        avaliacao.setProfissional(profissional);
+        //avaliacao.setProfissional(profissional);
         
 
 
@@ -61,10 +63,25 @@ public class AvaliacaoService {
                 avaliacao.getNota(),
                 avaliacao.getComentario(),
                 avaliacao.getAgendamento().getId(),
-                avaliacao.getProfissional().getId(),
+                //avaliacao.getProfissional().getId(),
                 avaliacao.getUsuario().getId()
         );
+    }
 
+    public List<AvaliacaoResponseDTO> listarAvaliacoes(){
+
+        List<Avaliacao> avaliacaos = avaliacaoRepository.findAll();
+
+
+        return avaliacaos.stream()
+                .map(a -> new AvaliacaoResponseDTO(
+                        a.getId(),
+                        a.getNota(),
+                        a.getComentario(),
+                        a.getAgendamento().getId(),
+                                //a.getProfissional() != null ? a.getProfissional().getId() : null,
+                        a.getUsuario().getId()
+                )).toList();
     }
 
 }

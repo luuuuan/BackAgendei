@@ -4,5 +4,6 @@ public enum UserTipo {
     ADMINISTRADOR,
     CLIENTE,
     PRESTADOR,
-    PROFISSIONAL
+    PROFISSIONAL,
+    ADMIN
 }

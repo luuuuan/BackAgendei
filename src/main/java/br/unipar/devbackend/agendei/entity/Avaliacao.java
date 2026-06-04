@@ -28,6 +28,7 @@ public class Avaliacao {
     @ManyToOne
     private Usuario usuario;
 
-    @ManyToOne
-    private Profissional profissional;
+    private Boolean status;
+
+    private String motivoCancelamento;
 }

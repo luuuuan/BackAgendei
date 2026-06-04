@@ -18,7 +18,5 @@ public class AvaliacaoResponseDTO {
 
     private Long agendamentoId;
 
-    private Long profissionalId;
-
     private Long usuarioId;
 }

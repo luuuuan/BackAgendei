@@ -22,11 +22,7 @@ public class AvaliacaoCreateDTO {
     private String comentario;
 
     private Long agendamentoId;
-
-    @NotNull(message = "Profissional deve ser informado")
-    private Long profissionalId;
-
+    
     private Long usuarioId;
-
 
 }

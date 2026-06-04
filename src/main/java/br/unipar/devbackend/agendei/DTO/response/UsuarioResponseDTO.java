@@ -30,4 +30,6 @@ public class UsuarioResponseDTO {
     private UserTipo tipoUsuario;
 
     private Long prestadorId;
+
+    private Boolean ativo;
 }
