@@ -95,17 +95,19 @@ public class UsuarioService {
         if(usuarioRepository.existsByEmail(usuarioCreateDTO.getEmail())){
             throw new RuntimeException("E-mail já cadastrado");
         }
+
         if(usuarioRepository.existsByTelefone(usuarioCreateDTO.getTelefone())){
             throw new RuntimeException("Telefone já cadastrado");
         }
+
         if(usuarioRepository.existsByCpf(usuarioCreateDTO.getCpf())){
             throw new RuntimeException("CPF/CNPJ já cadastrado");
         }
 
-
-
-
         Usuario usuario = new Usuario();
+        String token = UUID.randomUUID().toString();
+        usuario.setTokenVerificacao(token);
+        usuario.setTokenExpiracaoVerificacao(LocalDateTime.now().plusHours(2));
 
         usuario.setNome(usuarioCreateDTO.getNome());
         usuario.setEmail(usuarioCreateDTO.getEmail());
@@ -117,6 +119,7 @@ public class UsuarioService {
         usuario.setEndereco(endereco);
         usuario.setTipoUsuario(usuarioCreateDTO.getTipoUsuario());
         usuario.setPrestador(prestadorId);
+        usuario.setAtivo(false);
 
 
         usuarioRepository.save(usuario);
@@ -190,8 +193,12 @@ public class UsuarioService {
 //
 //        }
 
+        if (usuario.getAtivo() == null || !usuario.getAtivo()){
+            throw new RuntimeException("Usuario não verificado!");
+        }
+
         if(!passwordEncoder.matches(usuarioLoginDTO.getSenha(), usuario.getSenha())){
-            throw new RuntimeException("E-mail ou senha incorretooo");
+            throw new RuntimeException("E-mail ou senha incorreto!");
         }
 
         return new UsuarioLoginResponseDTO(
@@ -200,6 +207,40 @@ public class UsuarioService {
                 usuario.getTipoUsuario().name(),
                 usuario.getPrestador() != null ? usuario.getPrestador().getId() : null);
 
+
+    }
+
+    public void confirmarConta(String email){
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("E-mail inexistente!"));
+
+        String token = UUID.randomUUID().toString();
+        usuario.setTokenVerificacao(token);
+        usuario.setTokenExpiracaoVerificacao(LocalDateTime.now().plusHours(2));
+        usuarioRepository.save(usuario);
+
+        emailService.confirmarConta(email, token);
+
+    }
+
+    public void contaConfirmada(String  email, String token){
+        LocalDateTime horaAtual = LocalDateTime.now();
+
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+
+        if(usuario.getTokenExpiracaoVerificacao() == null || horaAtual.isAfter(usuario.getTokenExpiracaoVerificacao())){
+            throw new RuntimeException("Token expirado!");
+        }
+
+        if(token.equals(usuario.getTokenVerificacao())){
+            usuario.setTokenVerificacao(null);
+            usuario.setAtivo(true);
+
+            usuarioRepository.save(usuario);
+        } else{
+            throw new RuntimeException("Token inválido!");
+        }
 
     }
 

@@ -66,4 +66,8 @@ public class Usuario {
     @JoinColumn(name = "prestador_id")
     private Prestador prestador;
 
+    private String tokenVerificacao;
+
+    private LocalDateTime tokenExpiracaoVerificacao;
+
 }

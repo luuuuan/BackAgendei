@@ -90,15 +90,31 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
+    @PostMapping("/confirmarConta")
+    public ResponseEntity<?> confirmarConta(
+            @RequestBody Map<String, String> body){
+
+        usuarioService.confirmarConta(body.get("email"));
+        return ResponseEntity.ok(Map.of("mensagem", "ok"));
+    }
+
+    @PostMapping("/contaConfirmada")
+    public ResponseEntity<?> contaConfirmada(
+        @RequestBody Map<String, String> body){
+        usuarioService.contaConfirmada(body.get("email"), body.get("token"));
+        return ResponseEntity.ok(Map.of("mensagem", "ok"));
+    }
+
     @PostMapping("/recuperarSenha")
-    public ResponseEntity<?> recuperarSenha(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> recuperarSenha(
+            @RequestBody Map<String, String> body) {
         usuarioService.solicitarRecuperacao(body.get("email"));
         return ResponseEntity.ok(Map.of("mensagem", "Email enviado!"));
 
 
     }
 
-    @PostMapping("/redefinirSenha")
+    @PostMapping("/redefinir-senha")
     public ResponseEntity<?> redefinirSenha(
             @RequestBody Map<String, String> body) {
         usuarioService.redefinirSenha(body.get("token"), body.get("novaSenha"));
@@ -114,5 +130,6 @@ public class UsuarioController {
         usuarioService.atualizarSenha(id, body.get("senhaAtual"), body.get("novaSenha"));
         return ResponseEntity.ok(Map.of("mensagem", "Senha atualizada!"));
     }
+
 
 }

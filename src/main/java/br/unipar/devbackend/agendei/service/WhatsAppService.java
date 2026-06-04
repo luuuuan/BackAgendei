@@ -1,6 +1,7 @@
 package br.unipar.devbackend.agendei.service;
 
 import br.unipar.devbackend.agendei.entity.Agendamento;
+import br.unipar.devbackend.agendei.entity.Servico;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -47,23 +48,32 @@ public class WhatsAppService {
     private String montarMensagem(Agendamento agendamento){
 
         return String.format("""
-                    Olá, %s!
+                Olá, %s!
                 
                 Você tem um agendamento em breve:
-                📌 %s
-                🕐 %s às 4%s
+                
+                Endereço:
+                📌 %s, %s, %s
+                🕐 %s às %s
+                
+                Serviço a ser realizado:
                 📝 %s
+                
+                Descrição: %s
                 
                 Até logo!
                 
                 Obs: Você pode cancelar o agendamento
-                com até duas horas de antecedência
+                com até duas horas de antecedência!
                 """,
                 agendamento.getUsuario().getNome(),
-                agendamento.getEndereco(),
+                agendamento.getEndereco().getLogradouro(),
+                agendamento.getEndereco().getNumero(),
+                agendamento.getEndereco().getBairro(),
                 agendamento.getDataAgendamento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 agendamento.getHoraInicio().format(DateTimeFormatter.ofPattern("HH:mm")),
-                agendamento.getServicos());
+                agendamento.getServicos().stream().map(Servico::getNome).toList(),
+                agendamento.getServicos().stream().map(Servico::getDescricao).toList());
     }
 
 

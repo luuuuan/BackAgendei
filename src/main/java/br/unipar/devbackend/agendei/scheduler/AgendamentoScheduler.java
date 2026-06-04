@@ -76,12 +76,11 @@ public class AgendamentoScheduler {
         log.info("{} agendamentos para notificar", agendamentos.size());
 
         for(Agendamento agendamento : agendamentos){
-            System.out.println("Entrou no loop");
                 emailService.enviarAgendamento(agendamento);
                 whatsAppService.enviarAgendamento(agendamento);
 
                 agendamento.setNotificacaoEnviada(true);
-                //agendamentoRepository.save(agendamento);
+                agendamentoRepository.save(agendamento);
 
         }
 
