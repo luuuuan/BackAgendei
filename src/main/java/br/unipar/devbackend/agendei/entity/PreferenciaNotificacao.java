@@ -1,6 +1,5 @@
 package br.unipar.devbackend.agendei.entity;
 
-import br.unipar.devbackend.agendei.DTO.response.UsuarioResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class PreferenciasNotificacao {
+public class PreferenciaNotificacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
