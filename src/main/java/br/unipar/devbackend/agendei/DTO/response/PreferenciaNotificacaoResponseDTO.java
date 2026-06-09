@@ -18,5 +18,7 @@ public class PreferenciaNotificacaoResponseDTO {
 
     private Boolean emailCancelamento;
 
-    private Boolean antecedenciaLembrete;
+    private Boolean whatsAppNotificacao;
+
+    private int antecedenciaLembrete;
 }
