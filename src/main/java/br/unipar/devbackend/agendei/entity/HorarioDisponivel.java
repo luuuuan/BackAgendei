@@ -39,5 +39,7 @@ public class HorarioDisponivel {
     @JoinColumn(name = "servico_id")
     private Servico servico;
 
-
+    @ManyToOne
+    @JoinColumn(name = "prestador_id")
+    private Prestador prestador;
 }

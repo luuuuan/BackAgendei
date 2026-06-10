@@ -250,8 +250,6 @@ public class AgendamentoService {
                 data.getDayOfWeek().getValue() < gradeTrabalho.getDiaInicio().getValue()){
             return new ArrayList<>();
         }
-        //===============================================================
-
 
         Integer duracao = servico.getDuracaoMinutos();
 
@@ -261,20 +259,18 @@ public class AgendamentoService {
 
         if(folga == true) return new ArrayList<>();
 
-        //===============================
-
         List<String> horarioDisponivel = new ArrayList<>();
         int inicio = gradeTrabalho.getHoraInicio().getHour() * 60 + gradeTrabalho.getHoraInicio().getMinute();
 
         int fim = gradeTrabalho.getHoraFim().getHour() * 60 + gradeTrabalho.getHoraFim().getMinute();
 
 
-
+        LocalTime horaAtual = LocalTime.now();
 
 
         for (int minutos = inicio; minutos + duracao < fim; minutos += duracao) {
 
-            LocalTime horaAtual = LocalTime.now();
+
 
             int horasConvertido = minutos / 60;
 
@@ -283,10 +279,6 @@ public class AgendamentoService {
             LocalTime tempo = LocalTime.of(horasConvertido, minutosConvertido);
 
             if(tempo.isBefore(horaAtual.plusHours(2)) && data.isEqual(diaAtual)){
-                continue;
-            }
-
-            if (tempo.equals(horaAtual)) {
                 continue;
             }
 
