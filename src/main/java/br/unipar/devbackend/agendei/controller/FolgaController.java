@@ -3,6 +3,7 @@ package br.unipar.devbackend.agendei.controller;
 
 import br.unipar.devbackend.agendei.DTO.create.FolgaCreateDTO;
 import br.unipar.devbackend.agendei.DTO.response.FolgaResponseDTO;
+import br.unipar.devbackend.agendei.entity.Folga;
 import br.unipar.devbackend.agendei.entity.GradeTrabalho;
 import br.unipar.devbackend.agendei.service.FolgaService;
 import jakarta.validation.Valid;
@@ -47,19 +48,20 @@ public class FolgaController {
     }
 
 
-    @PatchMapping("/desativar/{id}")
+    @PatchMapping("/desativar/{id}/{data}")
     public ResponseEntity<?> excluirFolga(
-            @PathVariable Long id)
+            @PathVariable Long id,
+            @PathVariable LocalDate data)
             {
-        folgaService.atualizaFolga(id);
+        FolgaResponseDTO folgaResponseDTO = folgaService.atualizaFolga(id, data);
 
         return ResponseEntity.ok(Map.of("mensagem", "Folga atualizada!"));
     }
 
-    @GetMapping("/prestador/{prestadorId}/mes/{ano}/{mes}")
+    @GetMapping("/prestador/{prestadorId}/mes")
     public ResponseEntity<List<FolgaResponseDTO>> folgaMes(
             @PathVariable Long prestadorId,
-            @PathVariable String mes){
+            @RequestParam String mes){
         List<FolgaResponseDTO> folgasMes = folgaService.buscaFolgaMesPrestador(prestadorId, mes);
 
         return ResponseEntity.ok(folgasMes);

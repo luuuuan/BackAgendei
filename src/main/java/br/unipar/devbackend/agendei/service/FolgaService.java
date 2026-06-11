@@ -126,9 +126,18 @@ public class FolgaService {
 
     }
 
-    public void atualizaFolga(Long id){
-        Folga folga = folgaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Folga inexistente!"));
+    public F atualizaFolga(Long id, LocalDate data){
+        Folga folga = folgaRepository.findByPrestadorIdAndData(id, data);
+
+        Boolean ativo = true;
+
+        Boolean folgaExistente = folgaRepository.existsByPrestadorIdAndDataAndAtivo(id, data, ativo);
+
+        System.out.println(folgaExistente);
+
+        if (!folgaExistente){
+            throw new RuntimeException("Já existe uma folga cadastrada para esse dia");
+        }
 
         LocalDate diaAtual = LocalDate.now();
 
