@@ -126,17 +126,17 @@ public class FolgaService {
 
     }
 
-    public F atualizaFolga(Long id, LocalDate data){
-        Folga folga = folgaRepository.findByPrestadorIdAndData(id, data);
+    public FolgaResponseDTO atualizaFolga(Long prestadorId, LocalDate data){
+        Folga folga = folgaRepository.findByPrestadorIdAndData(prestadorId, data);
 
         Boolean ativo = true;
 
-        Boolean folgaExistente = folgaRepository.existsByPrestadorIdAndDataAndAtivo(id, data, ativo);
+        Boolean folgaExistente = folgaRepository.existsByPrestadorIdAndDataAndAtivo(prestadorId, data, ativo);
 
         System.out.println(folgaExistente);
 
         if (!folgaExistente){
-            throw new RuntimeException("Já existe uma folga cadastrada para esse dia");
+            throw new RuntimeException("Folga não cadastrada para esse dia");
         }
 
         LocalDate diaAtual = LocalDate.now();
@@ -149,6 +149,13 @@ public class FolgaService {
         folga.setAtivo(false);
 
         folgaRepository.save(folga);
+
+        return new FolgaResponseDTO(
+                folga.getId(), folga.getData(),
+                folga.getProfissional() != null ? folga.getProfissional().getId() : null,
+                folga.getPrestador() != null ? folga.getPrestador().getId() : null,
+                folga.getDiaInteiro(), folga.getHoraInicio(), folga.getHoraFim(), folga.getMotivo()
+        );
     }
 
     public List<FolgaResponseDTO> buscaFolgaMesPrestador(Long prestadorId, String mes){

@@ -10,6 +10,7 @@ import br.unipar.devbackend.agendei.enums.StatusAgendamento;
 import br.unipar.devbackend.agendei.enums.StatusProfissional;
 import br.unipar.devbackend.agendei.enums.UserTipo;
 import br.unipar.devbackend.agendei.repository.*;
+import br.unipar.devbackend.agendei.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,6 +50,8 @@ public class UsuarioService {
 
     @Autowired
     private AgendamentoRepository agendamentoRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public UsuarioResponseDTO mapperDTO(Usuario usuario){
 
@@ -200,11 +203,15 @@ public class UsuarioService {
             throw new RuntimeException("E-mail ou senha incorreto!");
         }
 
+        Long prestadorIdLogin = usuario.getPrestador() != null ? usuario.getPrestador().getId() : null;
+        String jwtToken = jwtUtil.gerarToken(usuario.getId(), usuario.getEmail(), usuario.getTipoUsuario().name(), prestadorIdLogin);
+
         return new UsuarioLoginResponseDTO(
                 usuario.getId(),
                 usuario.getEmail(),
                 usuario.getTipoUsuario().name(),
-                usuario.getPrestador() != null ? usuario.getPrestador().getId() : null);
+                prestadorIdLogin,
+                jwtToken);
 
 
     }

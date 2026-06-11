@@ -48,14 +48,14 @@ public class FolgaController {
     }
 
 
-    @PatchMapping("/desativar/{id}/{data}")
+    @PatchMapping("/desativar/{prestadorId}/{data}")
     public ResponseEntity<?> excluirFolga(
-            @PathVariable Long id,
+            @PathVariable Long prestadorId,
             @PathVariable LocalDate data)
             {
-        FolgaResponseDTO folgaResponseDTO = folgaService.atualizaFolga(id, data);
+        FolgaResponseDTO folgaResponseDTO = folgaService.atualizaFolga(prestadorId, data);
 
-        return ResponseEntity.ok(Map.of("mensagem", "Folga atualizada!"));
+        return ResponseEntity.ok(folgaResponseDTO);
     }
 
     @GetMapping("/prestador/{prestadorId}/mes")

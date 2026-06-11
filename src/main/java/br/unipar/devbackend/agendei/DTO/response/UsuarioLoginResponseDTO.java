@@ -13,4 +13,5 @@ public class UsuarioLoginResponseDTO {
     private String email;
     private String tipoUsuario;
     private Long prestadorId;
+    private String token;
 }

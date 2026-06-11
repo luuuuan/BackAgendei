@@ -11,7 +11,9 @@ import br.unipar.devbackend.agendei.enums.UserTipo;
 import br.unipar.devbackend.agendei.repository.PrestadorRepository;
 import br.unipar.devbackend.agendei.repository.ServicoRepository;
 import br.unipar.devbackend.agendei.repository.UsuarioRepository;
+import br.unipar.devbackend.agendei.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,16 +29,24 @@ public class AuthService {
 
     @Autowired
     private ServicoRepository servicoRepository;
-
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private JwtUtil jwtUtil;
+	
     public UsuarioLoginResponseDTO cadastrar(CadastroCreateDTO cadastroCreateDTO) {
 
         Usuario usuario = new Usuario();
         usuario.setNome(cadastroCreateDTO.getUsuario().getNome());
         usuario.setEmail(cadastroCreateDTO.getUsuario().getEmail());
-        usuario.setSenha(cadastroCreateDTO.getUsuario().getSenha());
+        usuario.setSenha(passwordEncoder.encode(cadastroCreateDTO.getUsuario().getSenha()));
         usuario.setTipoUsuario(cadastroCreateDTO.getUsuario().getTipoUsuario());
 
         usuarioRepository.save(usuario);
+
+        Prestador prestadorSalvo = null;
 
         if (usuario.getTipoUsuario() == UserTipo.PRESTADOR) {
 
@@ -54,14 +64,20 @@ public class AuthService {
             prestador.setServico(servicos);
             prestador.setUsuario(usuario);
 
-            prestadorRepository.save(prestador);
+            prestadorSalvo = prestadorRepository.save(prestador);
         }
+		
+		Long prestadorId = prestadorSalvo != null ? prestadorSalvo.getId() : null;
+		
+		String token = jwtUtil.gerarToken(usuario.getId(), usuario.getEmail(), usuario.getTipoUsuario().name(), prestadorId);
 
         return new UsuarioLoginResponseDTO(
                 usuario.getId(),
                 usuario.getEmail(),
                 usuario.getTipoUsuario().name(),
-                usuario.getPrestador().getId()
+                prestadorId,
+				token
+				
         );
     }
 }
