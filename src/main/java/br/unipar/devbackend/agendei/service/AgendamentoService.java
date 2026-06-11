@@ -6,6 +6,7 @@ import br.unipar.devbackend.agendei.DTO.create.PagamentoConfirmaCreateDTO;
 import br.unipar.devbackend.agendei.DTO.response.AgendamentoPesquisaResponseDTO;
 import br.unipar.devbackend.agendei.DTO.response.AgendamentoResponseDTO;
 import br.unipar.devbackend.agendei.entity.*;
+import br.unipar.devbackend.agendei.entity.AuditoriaAgendamento;
 import br.unipar.devbackend.agendei.enums.StatusAgendamento;
 import br.unipar.devbackend.agendei.enums.StatusHorario;
 import br.unipar.devbackend.agendei.enums.TipoCobranca;
@@ -56,6 +57,9 @@ public class AgendamentoService {
     @Autowired
     private PagamentoService pagamentoService;
 
+    @Autowired
+    private AuditoriaAgendamentoRepository auditoriaAgendamentoRepository;
+
     public AgendamentoResponseDTO mapperDTO(Agendamento agendamento){
 
         return new  AgendamentoResponseDTO(
@@ -82,6 +86,8 @@ public class AgendamentoService {
 
     @Transactional
     public AgendamentoResponseDTO criarAgendamento(AgendamentoCreateDTO agendamentoCreateDTO) {
+        LocalDateTime dataAcao = LocalDateTime.now();
+
         Usuario usuario = agendamentoCreateDTO.getUsuarioId() != null ?
                 usuarioRepository
                 .findById(agendamentoCreateDTO.getUsuarioId())
@@ -171,6 +177,22 @@ public class AgendamentoService {
             pagamentoService.confirmarPagamento(pgto);
             agendamentoRepository.save(agendamento);
         }
+
+        String email = usuario.getEmail() != null ? usuario.getEmail() : null;
+        AuditoriaAgendamento auditoriaAgendamento = new AuditoriaAgendamento();
+
+        auditoriaAgendamento.setAgendamento(agendamento);
+        auditoriaAgendamento.setUsuario(usuario);
+        auditoriaAgendamento.setDataAcao(dataAcao);
+        auditoriaAgendamento.setAcao("Criação");
+        
+		if(usuario.getId != null{
+			auditoriaAgendamento.setDetalhes("Agendamento criado pelo usuário: " + usuario.getId());
+		}else{
+			auditoriaAgendamento.setDetalhes("Agendamento criado pelo prestador: " + prestador.getId());
+		}
+
+        auditoriaAgendamentoRepository.save(auditoriaAgendamento);
 
         return mapperDTO(agendamento);
     }
