@@ -25,9 +25,11 @@ public class Folga {
     private LocalDate data;
 
     @ManyToOne
+    @JoinColumn(name = "profissional_id")
     private Profissional profissional;
 
     @ManyToOne
+    @JoinColumn(name = "prestador_id")
     private Prestador prestador;
 
     private Boolean diaInteiro;
@@ -39,5 +41,9 @@ public class Folga {
     private String motivo;
 
     private Boolean ativo;
+
+    private LocalDate inicio;
+
+    private LocalDate fim;
 
 }

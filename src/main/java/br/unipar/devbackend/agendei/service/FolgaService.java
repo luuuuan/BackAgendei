@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -49,13 +50,13 @@ public class FolgaService {
             throw new RuntimeException("Dia da folga não pode ser anterior ao atual");
         }
 
-        if (folgaRepository.existsByProfissionalIdAndData(
-                folgaCreateDTO.getProfissionalId(),
-                folgaCreateDTO.getData()) ||
-                folgaRepository.existsByPrestadorIdAndData(
-                        folgaCreateDTO.getPrestadorId(), folgaCreateDTO.getData())){
-            throw new RuntimeException("Folga já cadastrada para essa data");
-        }
+//        if (folgaRepository.existsByProfissionalIdAndData(
+//                folgaCreateDTO.getProfissionalId(),
+//                folgaCreateDTO.getData()) ||
+//                folgaRepository.existsByPrestadorIdAndData(
+//                        folgaCreateDTO.getPrestadorId(), folgaCreateDTO.getData())){
+//            throw new RuntimeException("Folga já cadastrada para essa data");
+//        }
 
 
         Folga folga = new Folga();
@@ -139,5 +140,29 @@ public class FolgaService {
         folga.setAtivo(false);
 
         folgaRepository.save(folga);
+    }
+
+    public List<FolgaResponseDTO> buscaFolgaMesPrestador(Long prestadorId, String mes){
+
+        YearMonth yearMonth = YearMonth.parse(mes);
+
+        LocalDate inicio = yearMonth.atDay(1);
+
+        LocalDate fim = yearMonth.atEndOfMonth();
+
+        List<Folga> folga = folgaRepository.findByPrestadorIdAndDataBetween(prestadorId, inicio, fim);
+
+        return folga.stream()
+                .filter(Folga::getAtivo)
+                .map( f -> new FolgaResponseDTO(
+                        f.getId(),
+                        f.getData(),
+                        f.getProfissional() != null ? f.getProfissional().getId() : null,
+                        f.getPrestador() != null ? f.getPrestador().getId() : null,
+                        f.getDiaInteiro(),
+                        f.getHoraInicio(),
+                        f.getHoraFim(),
+                        f.getMotivo()
+                )).toList();
     }
 }

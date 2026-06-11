@@ -56,5 +56,13 @@ public class FolgaController {
         return ResponseEntity.ok(Map.of("mensagem", "Folga atualizada!"));
     }
 
+    @GetMapping("/prestador/{prestadorId}/mes/{ano}/{mes}")
+    public ResponseEntity<List<FolgaResponseDTO>> folgaMes(
+            @PathVariable Long prestadorId,
+            @PathVariable String mes){
+        List<FolgaResponseDTO> folgasMes = folgaService.buscaFolgaMesPrestador(prestadorId, mes);
+
+        return ResponseEntity.ok(folgasMes);
+    }
 
 }
