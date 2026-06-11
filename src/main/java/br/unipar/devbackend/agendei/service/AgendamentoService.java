@@ -186,7 +186,7 @@ public class AgendamentoService {
         auditoriaAgendamento.setDataAcao(dataAcao);
         auditoriaAgendamento.setAcao("Criação");
         
-		if(usuario.getId != null{
+		if(usuario.getId() != null){
 			auditoriaAgendamento.setDetalhes("Agendamento criado pelo usuário: " + usuario.getId());
 		}else{
 			auditoriaAgendamento.setDetalhes("Agendamento criado pelo prestador: " + prestador.getId());
